@@ -6,19 +6,22 @@ const DishGrid = ({ showCart, addToCart, cart }) => {
   return (
     <div
       className="
-        mt-6
-        grid
-        gap-x-4 gap-y-8
+    mt-6
+    grid
+    gap-x-4 gap-y-8
 
-        /* 🔥 AUTO RESPONSIVE GRID */
-        [grid-template-columns:repeat(auto-fit,minmax(160px,1fr))]
+    /* ✅ BELOW 270px → FORCE 1 COLUMN */
+    [@media(max-width:270px)]:grid-cols-1
 
-        /* TABLET TUNING */
-        md:[grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]
+    /* 🔥 AUTO RESPONSIVE GRID */
+    [grid-template-columns:repeat(auto-fit,minmax(160px,1fr))]
 
-        /* DESKTOP TUNING */
-        xl:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]
-      "
+    /* TABLET */
+    md:[grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]
+
+    /* DESKTOP */
+    xl:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]
+  "
     >
       {DISHDATA.map((dish) => (
         <DishCard
