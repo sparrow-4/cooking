@@ -109,11 +109,12 @@ function MenuDashboard() {
         )}
 
         {/* MOBILE NAV – MOBILE ONLY */}
-        {isMobile && (
-          <div className="fixed bottom-0 left-0 right-0 z-50">
-            <MobileNav active={activeNav} setActive={setActiveNav} />
-          </div>
-        )}
+        {isMobile && !showCart && (
+  <div className="fixed bottom-0 left-0 right-0 z-50">
+    <MobileNav active={activeNav} setActive={setActiveNav} />
+  </div>
+)}
+
       </div>
     </div>
   );
