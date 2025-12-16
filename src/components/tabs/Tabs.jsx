@@ -5,7 +5,7 @@ const Tabs = () => {
   const [activeTab, setActiveTab] = useState("today");
 
   return (
-    <div className="flex space-x-8 mt-8">
+    <div className="flex space-x-8 mt-8 ">
       <TabItem
         label="Today Special"
         active={activeTab === "today"}

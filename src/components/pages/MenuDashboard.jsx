@@ -44,37 +44,38 @@ function MenuDashboard() {
   const toggleCart = () => setShowCart((p) => !p);
 
   return (
-    /* ===== OUTER BLACK BACKGROUND ===== */
+    // backgr outer
     <div className="min-h-screen w-full bg-black flex justify-center">
-      
-      {/* ===== MAX WIDTH APP CONTAINER ===== */}
-      <div className="w-full max-w-[1600px] flex h-screen bg-[#111018] overflow-hidden relative">
-
-        {/* SIDEBAR – TABLET + DESKTOP */}
+      <div className="w-full max-w-[1600px] flex  h-screen bg-[#111018] overflow-hidden relative">
         {!isMobile && <Sidebar />}
 
-        {/* ===== MAIN CONTENT ===== */}
         <div
           className={`
-            flex-1 px-4 md:px-10 py-8 overflow-y-auto
+            flex-1 px-4 md:px-10 pb-5 overflow-y-auto
             transition-all duration-300
             ${!isMobile && !isTablet && showCart ? "mr-[430px]" : "mr-0"}
           `}
         >
-          <Header
-            toggleCart={toggleCart}
-            isMobile={isMobile}
-            isTablet={isTablet}
-          />
-
-          <Tabs />
-          <DishFilterBar />
+          <div
+            className={`
+    ${!isMobile && !isTablet ? "sticky top-0 z-40 bg-[#111018]" : ""}
+  `}
+          >
+            <Header
+              toggleCart={toggleCart}
+              isMobile={isMobile}
+              isTablet={isTablet}
+            />
+            <Tabs />
+            <DishFilterBar />
+          </div>
 
           <DishGrid
             showCart={showCart}
             isMobile={isMobile}
             isTablet={isTablet}
             addToCart={addToCart}
+            cart={cart}
           />
         </div>
 

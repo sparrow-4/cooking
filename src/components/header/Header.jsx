@@ -26,10 +26,10 @@ const Header = ({ toggleCart, isMobile, isTablet }) => {
   }, []);
 
   return (
-    <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between  gap-4">
       {/* LEFT */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-semibold text-white">
+        <h1 className="text-2xl md:text-3xl font-semibold text-white pt-8">
           Chef Kitchen
         </h1>
         <p className="text-white mt-1 text-base md:text-xl">{dateTime}</p>

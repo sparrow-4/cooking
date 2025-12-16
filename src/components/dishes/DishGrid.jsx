@@ -2,7 +2,7 @@ import React from "react";
 import DishCard from "./DishCard";
 import { DISHDATA } from "../../constants/assets";
 
-const DishGrid = ({ showCart, isMobile, isTablet, addToCart }) => {
+const DishGrid = ({ showCart, isMobile, isTablet, addToCart, cart }) => {
   return (
     <div
       className={`
@@ -22,7 +22,7 @@ const DishGrid = ({ showCart, isMobile, isTablet, addToCart }) => {
 
         /* DESKTOP */
         ${showCart ? "xl:grid-cols-3" : "xl:grid-cols-5"}
-        xl:gap-x-0
+        xl:gap-x-3
         xl:gap-y-12
       `}
     >
@@ -35,6 +35,7 @@ const DishGrid = ({ showCart, isMobile, isTablet, addToCart }) => {
           newPrice={dish.newPrice}
           stock={dish.stock}
           onAddToCart={addToCart}
+          cart={cart} 
         />
       ))}
     </div>
