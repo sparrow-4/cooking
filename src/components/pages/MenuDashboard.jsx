@@ -15,6 +15,12 @@ function MenuDashboard() {
   const [activeNav, setActiveNav] = useState("home");
   const [cart, setCart] = useState([]);
 
+  /* ===== TOTAL ITEMS (SAFE) ===== */
+  const totalItems = cart.reduce(
+    (sum, item) => sum + (item.qty || 0),
+    0
+  );
+
   /* ===== DEVICE DETECTION ===== */
   useEffect(() => {
     const checkScreen = () => {
@@ -34,21 +40,27 @@ function MenuDashboard() {
       const existing = prev.find((i) => i.cartId === item.cartId);
       if (existing) {
         return prev.map((i) =>
-          i.cartId === item.cartId ? { ...i, qty: i.qty + 1 } : i
+          i.cartId === item.cartId
+            ? { ...i, qty: i.qty + 1 }
+            : i
         );
       }
-      return [...prev, item];
+      return [...prev, { ...item, qty: 1 }];
     });
   };
 
   const toggleCart = () => setShowCart((p) => !p);
 
   return (
-    // backgr outer
-    <div className="min-h-screen w-full bg-black flex justify-center">
-      <div className="w-full max-w-[1600px] flex  h-screen bg-[#111018] overflow-hidden relative">
+    <div className="min-h-screen w-full bg-black relative">
+
+      {/* ===== MAIN APP CONTAINER ===== */}
+      <div className="w-full max-w-[1600px] mx-auto flex h-screen bg-[#111018] relative">
+
+        {/* SIDEBAR — DESKTOP ONLY */}
         {!isMobile && <Sidebar />}
 
+        {/* MAIN CONTENT */}
         <div
           className={`
             flex-1 px-4 md:px-10 pb-5 overflow-y-auto
@@ -56,15 +68,13 @@ function MenuDashboard() {
             ${!isMobile && !isTablet && showCart ? "mr-[430px]" : "mr-0"}
           `}
         >
-          <div
-            className={`
-    ${!isMobile && !isTablet ? "sticky top-0 z-40 bg-[#111018]" : ""}
-  `}
-          >
+          {/* STICKY HEADER — DESKTOP ONLY */}
+          <div className={`${!isMobile && !isTablet ? "sticky top-0 z-40 bg-[#111018]" : ""}`}>
             <Header
               toggleCart={toggleCart}
               isMobile={isMobile}
               isTablet={isTablet}
+              totalItems={totalItems}
             />
             <Tabs />
             <DishFilterBar />
@@ -79,43 +89,62 @@ function MenuDashboard() {
           />
         </div>
 
-        {/* ===== CART OVERLAY ===== */}
+        {/* ===== CART PANEL ===== */}
         {showCart && (
           <div
             className={`
               fixed top-0 right-0 h-full bg-[#1F1D2B]
-              ${isMobile ? "w-full z-40" : "w-[430px] z-50"}
+              ${isMobile ? "w-full z-[80]" : "w-[430px] z-[80]"}
             `}
           >
-            <OrderPanel cart={cart} setCart={setCart} />
+            <OrderPanel
+              cart={cart}
+              setCart={setCart}
+              isMobile={isMobile}
+              isTablet={isTablet}
+              onBack={toggleCart}
+            />
           </div>
         )}
+      </div>
 
-        {/* FLOATING CART – MOBILE + TABLET */}
-        {(isMobile || isTablet) && (
-          <button
-            onClick={toggleCart}
-            className="
-              fixed bottom-28 right-6 z-50
-              w-14 h-14
-              bg-[#ff9a63]
+      {/* ===== FLOATING CART (MOBILE + TABLET) ===== */}
+      {(isMobile || isTablet) && !showCart && (
+        <button
+          onClick={toggleCart}
+          className="
+            fixed bottom-28 right-6 z-[999]
+            w-14 h-14
+            bg-[#ff9a63]
+            rounded-full
+            flex items-center justify-center
+            shadow-[0_10px_25px_rgba(255,154,99,0.45)]
+          "
+        >
+          <FiShoppingCart size={22} className="text-black" />
+
+          {totalItems > 0 && (
+            <span className="
+              absolute -top-1 -right-1
+              min-w-[20px] h-[20px]
+              px-1
+              bg-black
+              text-white text-xs font-semibold
               rounded-full
               flex items-center justify-center
-              shadow-[0_10px_25px_rgba(255,154,99,0.45)]
-            "
-          >
-            <FiShoppingCart size={22} className="text-black" />
-          </button>
-        )}
+            ">
+              {totalItems}
+            </span>
+          )}
+        </button>
+      )}
 
-        {/* MOBILE NAV – MOBILE ONLY */}
-        {isMobile && !showCart && (
-  <div className="fixed bottom-0 left-0 right-0 z-50">
-    <MobileNav active={activeNav} setActive={setActiveNav} />
-  </div>
-)}
-
-      </div>
+      {/* ===== MOBILE NAV ===== */}
+      {isMobile && !showCart && (
+        <div className="fixed bottom-0 left-0 right-0 z-50">
+          <MobileNav active={activeNav} setActive={setActiveNav} />
+        </div>
+      )}
     </div>
   );
 }

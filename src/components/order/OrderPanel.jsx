@@ -1,8 +1,8 @@
 import React from "react";
-import { FiTrash2 } from "react-icons/fi";
+import { FiTrash2, FiArrowLeft } from "react-icons/fi";
 import OrderSummary from "./OrderSummary";
 
-const OrderPanel = ({ cart, setCart }) => {
+const OrderPanel = ({ cart, setCart, isMobile, onBack, isTablet }) => {
   // Increase / decrease quantity (minimum 1)
   const updateQty = (cartId, delta) => {
     setCart((prev) =>
@@ -30,16 +30,36 @@ const OrderPanel = ({ cart, setCart }) => {
         md:w-[420px]
         lg:w-[430px]
         p-6
-        pb-6
-        sm:pb-6
-        md:pb-6
         overflow-hidden
       "
     >
-      <h2 className="text-xl font-semibold text-white">Orders</h2>
+     <div className="flex items-center gap-3 mb-4">
+  {(isMobile || isTablet) && (
+    <button
+      onClick={onBack}
+      className="p-2 rounded-lg bg-[#26252d] text-white"
+    >
+      <FiArrowLeft size={18} />
+    </button>
+  )}
+  <h2 className="text-xl font-semibold text-white">Orders</h2>
+</div>
 
-      {/* ITEMS LIST */}
-      <div className="mt-6 space-y-4 overflow-y-auto no-scrollbar pr-2 max-h-[55vh]">
+
+
+      {/* ===== ITEMS LIST ===== */}
+     <div
+  className="
+    space-y-4
+    overflow-y-auto
+    no-scrollbar
+    pr-2
+    max-h-[55vh]
+    md:max-h-[80vh]
+    lg:max-h-[70vh]
+  "
+>
+
         {cart.length === 0 && (
           <p className="text-gray-400 text-sm text-center mt-10">
             Cart is empty
@@ -119,7 +139,7 @@ const OrderPanel = ({ cart, setCart }) => {
         })}
       </div>
 
-      {/* SUMMARY — ALWAYS AT BOTTOM */}
+      {/* ===== SUMMARY (STICKY AT BOTTOM) ===== */}
       <div className="mt-auto pt-4">
         <OrderSummary cart={cart} />
       </div>

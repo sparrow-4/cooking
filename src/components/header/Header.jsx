@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import { FiShoppingCart } from "react-icons/fi";
 
-const Header = ({ toggleCart, isMobile, isTablet }) => {
+const Header = ({ toggleCart, isMobile, isTablet, totalItems}) => {
   const [dateTime, setDateTime] = useState("");
 
   useEffect(() => {
@@ -41,14 +41,29 @@ const Header = ({ toggleCart, isMobile, isTablet }) => {
           <SearchBar placeholder="Search for food, coffee, etc..." />
         </div>
 
-        {/* ✅ TOP CART ICON — DESKTOP ONLY */}
+        {/* TOP CART ICON — DESKTOP ONLY */}
         {!isMobile && !isTablet && (
           <button
-            onClick={toggleCart}
-            className="p-3 bg-[#2C2A35] rounded-xl hover:bg-[#3a3743] transition"
-          >
-            <FiShoppingCart size={20} className="text-white" />
-          </button>
+  onClick={toggleCart}
+  className="relative p-3 bg-[#2C2A35] rounded-xl hover:bg-[#3a3743] transition"
+>
+  <FiShoppingCart size={20} className="text-white" />
+
+  {totalItems > 0 && (
+    <span className="
+      absolute -top-1 -right-1
+      min-w-[18px] h-[18px]
+      px-1
+      bg-[#ff9a63]
+      text-black text-[11px] font-semibold
+      rounded-full
+      flex items-center justify-center
+    ">
+      {totalItems}
+    </span>
+  )}
+</button>
+  
         )}
       </div>
     </div>
