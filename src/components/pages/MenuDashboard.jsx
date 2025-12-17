@@ -6,6 +6,7 @@ import DishGrid from "../dishes/DishGrid";
 import OrderPanel from "../order/OrderPanel";
 import Sidebar from "../SideBar/Sidebar";
 import MobileNav from "../MobileNav";
+import ReceiptPage from "../receipt/ReceiptPage"; // ✅ REQUIRED
 import { FiShoppingCart } from "react-icons/fi";
 
 function MenuDashboard() {
@@ -15,11 +16,12 @@ function MenuDashboard() {
   const [activeNav, setActiveNav] = useState("home");
   const [cart, setCart] = useState([]);
 
-  /* ===== TOTAL ITEMS (SAFE) ===== */
-  const totalItems = cart.reduce(
-    (sum, item) => sum + (item.qty || 0),
-    0
-  );
+  // ✅ RECEIPT STATE
+  const [showReceipt, setShowReceipt] = useState(false);
+  const [receiptData, setReceiptData] = useState(null);
+
+  /* ===== TOTAL ITEMS ===== */
+  const totalItems = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
 
   /* ===== DEVICE DETECTION ===== */
   useEffect(() => {
@@ -40,9 +42,7 @@ function MenuDashboard() {
       const existing = prev.find((i) => i.cartId === item.cartId);
       if (existing) {
         return prev.map((i) =>
-          i.cartId === item.cartId
-            ? { ...i, qty: i.qty + 1 }
-            : i
+          i.cartId === item.cartId ? { ...i, qty: i.qty + 1 } : i
         );
       }
       return [...prev, { ...item, qty: 1 }];
@@ -51,25 +51,56 @@ function MenuDashboard() {
 
   const toggleCart = () => setShowCart((p) => !p);
 
+  /* ===== PLACE ORDER ===== */
+  const handlePlaceOrder = () => {
+    if (cart.length === 0) return;
+
+    setReceiptData({
+      orderId: `ORD-${Date.now()}`,
+      date: new Date(),
+      items: cart,
+    });
+
+    setShowReceipt(true);
+    setCart([]); // ✅ clear cart
+    setShowCart(false); // ✅ close cart panel
+  };
+
   return (
-    <div className="min-h-screen w-full bg-black relative">
-
+    <div className="min-h-screen w-full bg-[#111018] relative overflow-hidden">
       {/* ===== MAIN APP CONTAINER ===== */}
-      <div className="w-full max-w-[1600px] mx-auto flex h-screen bg-[#111018] relative">
-
+      <div
+        className={`
+          w-full max-w-[1600px] mx-auto flex h-screen relative
+          transition-all duration-300
+          ${showReceipt ? "blur-sm scale-[0.98]" : ""}
+        `}
+      >
         {/* SIDEBAR — DESKTOP ONLY */}
         {!isMobile && <Sidebar />}
 
         {/* MAIN CONTENT */}
         <div
-          className={`
-            flex-1 px-4 md:px-10 pb-5 overflow-y-auto
-            transition-all duration-300
-            ${!isMobile && !isTablet && showCart ? "mr-[430px]" : "mr-0"}
-          `}
+                 className={`
+          flex-1 px-4 md:px-10 pb-18
+          overflow-y-auto
+          overscroll-contain
+          scroll-smooth
+          touch-pan-y
+          no-scrollbar
+          transition-all duration-300
+          ${!isMobile && !isTablet && showCart ? "mr-[430px]" : "mr-0"}
+        `}
+
         >
-          {/* STICKY HEADER — DESKTOP ONLY */}
-          <div className={`${!isMobile && !isTablet ? "sticky top-0 z-40 bg-[#111018]" : ""}`}>
+          {/* STICKY HEADER */}
+          <div
+            className={`${
+              !isMobile && !isTablet
+                ? "sticky top-0 z-40 p-5 rounded-3xl bg-[#111018]"
+                : ""
+            }`}
+          >
             <Header
               toggleCart={toggleCart}
               isMobile={isMobile}
@@ -103,6 +134,7 @@ function MenuDashboard() {
               isMobile={isMobile}
               isTablet={isTablet}
               onBack={toggleCart}
+              onPlaceOrder={handlePlaceOrder}
             />
           </div>
         )}
@@ -122,9 +154,9 @@ function MenuDashboard() {
           "
         >
           <FiShoppingCart size={22} className="text-black" />
-
           {totalItems > 0 && (
-            <span className="
+            <span
+              className="
               absolute -top-1 -right-1
               min-w-[20px] h-[20px]
               px-1
@@ -132,7 +164,8 @@ function MenuDashboard() {
               text-white text-xs font-semibold
               rounded-full
               flex items-center justify-center
-            ">
+            "
+            >
               {totalItems}
             </span>
           )}
@@ -144,6 +177,11 @@ function MenuDashboard() {
         <div className="fixed bottom-0 left-0 right-0 z-50">
           <MobileNav active={activeNav} setActive={setActiveNav} />
         </div>
+      )}
+
+      {/* RECEIPT OVERLAY */}
+      {showReceipt && receiptData && (
+        <ReceiptPage data={receiptData} onClose={() => setShowReceipt(false)} />
       )}
     </div>
   );

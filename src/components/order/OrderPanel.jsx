@@ -2,7 +2,7 @@ import React from "react";
 import { FiTrash2, FiArrowLeft } from "react-icons/fi";
 import OrderSummary from "./OrderSummary";
 
-const OrderPanel = ({ cart, setCart, isMobile, onBack, isTablet }) => {
+const OrderPanel = ({ cart, setCart, isMobile, onBack, isTablet, onPlaceOrder }) => {
   // Increase / decrease quantity (minimum 1)
   const updateQty = (cartId, delta) => {
     setCart((prev) =>
@@ -13,7 +13,7 @@ const OrderPanel = ({ cart, setCart, isMobile, onBack, isTablet }) => {
       )
     );
   };
-
+  
   // Remove item completely
   const removeItem = (cartId) => {
     setCart((prev) => prev.filter((item) => item.cartId !== cartId));
@@ -141,7 +141,10 @@ const OrderPanel = ({ cart, setCart, isMobile, onBack, isTablet }) => {
 
       {/* ===== SUMMARY (STICKY AT BOTTOM) ===== */}
       <div className="mt-auto pt-4">
-        <OrderSummary cart={cart} />
+        <OrderSummary 
+        cart={cart} 
+        onPlaceOrder={onPlaceOrder}
+        />
       </div>
     </div>
   );

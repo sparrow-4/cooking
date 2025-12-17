@@ -3,7 +3,7 @@ import DropdownButton from "../DropdownButton";
 
 const DishFilterBar = () => {
   return (
-    <div className="flex items-center justify-between mt-8 pb-2 border-b border-orange-400">
+    <div className="flex items-center justify-between mt-8 pb-2 ">
       
       {/* Left Label */}
       <h2 className="text-lg font-medium text-gray-200">

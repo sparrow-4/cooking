@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
+import { gsap } from "gsap";
 
 const DishCard = ({
   name,
@@ -11,6 +12,10 @@ const DishCard = ({
 }) => {
   const [size, setSize] = useState("M");
   const [showToast, setShowToast] = useState(false);
+
+  const cardRef = useRef(null);
+  const imgRef = useRef(null);
+  const btnRef = useRef(null);
 
   /* ===== PRICE LOGIC ===== */
   const basePrice = useMemo(() => {
@@ -31,8 +36,61 @@ const DishCard = ({
   const cartId = `${name}-${size}`;
   const isAdded = cart?.some((item) => item.cartId === cartId);
 
+  /* ===== GSAP HOVER ===== */
+  const onHover = () => {
+    gsap.to(cardRef.current, {
+      y: -6,
+      boxShadow: "0 30px 70px rgba(0,0,0,0.6)",
+      duration: 0.25,
+      ease: "power2.out",
+    });
+
+    gsap.to(imgRef.current, {
+      y: -4,
+      scale: 1.05,
+      duration: 0.25,
+      ease: "power2.out",
+    });
+  };
+
+  const onLeave = () => {
+    gsap.to(cardRef.current, {
+      y: 0,
+      boxShadow: "0 20px 50px rgba(0,0,0,0.45)",
+      duration: 0.25,
+      ease: "power2.out",
+    });
+
+    gsap.to(imgRef.current, {
+      y: 0,
+      scale: 1,
+      duration: 0.25,
+      ease: "power2.out",
+    });
+  };
+
+  /* ===== ADD TO CART ===== */
   const handleAddToCart = () => {
     if (isOut || isAdded) return;
+
+    // Button press animation
+    gsap.fromTo(
+      btnRef.current,
+      { scale: 1 },
+      { scale: 0.92, duration: 0.1, yoyo: true, repeat: 1 }
+    );
+
+    // Card glow pulse
+    gsap.fromTo(
+      cardRef.current,
+      { boxShadow: "0 0 0 rgba(255,154,99,0)" },
+      {
+        boxShadow: "0 0 30px rgba(255,154,99,0.45)",
+        duration: 0.35,
+        yoyo: true,
+        repeat: 1,
+      }
+    );
 
     onAddToCart({
       cartId,
@@ -44,117 +102,91 @@ const DishCard = ({
     });
 
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 1800);
+    setTimeout(() => setShowToast(false), 1600);
   };
 
   return (
     <>
-      {/* ===== TOP-CENTER TOAST ===== */}
+      {/* TOAST */}
       {showToast && (
-        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[999] pointer-events-none">
-          <div className="bg-green-600 text-white px-6 py-3 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.45)] text-sm font-semibold animate-[toastPop_0.25s_ease-out]">
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[999]">
+          <div className="bg-green-600 text-white px-6 py-3 rounded-2xl shadow-lg text-sm font-semibold">
             ✓ {name} added to cart
           </div>
         </div>
       )}
 
-      {/* ===== CARD ===== */}
-      <div className="relative w-full flex  mt-9 flex-col group">
+      {/* CARD */}
+      <div
+        ref={cardRef}
+        onMouseEnter={onHover}
+        onMouseLeave={onLeave}
+        className="relative mt-10 bg-[#1F1D2B] rounded-2xl px-6 pt-16 pb-5 text-center transition"
+      >
         {/* IMAGE */}
-        <div className="absolute -top-8 sm:-top-10 w-full flex justify-center z-10">
+        <div className="absolute -top-10 left-1/2 -translate-x-1/2">
           <img
+            ref={imgRef}
             src={img}
             alt={name}
-            className="
-              w-24 h-24 sm:w-28 sm:h-28 rounded-full object-cover
-              shadow-[0_12px_30px_rgba(0,0,0,0.55)]
-              transition-transform duration-300
-              group-hover:-translate-y-1
-            "
+            className="w-24 h-24 rounded-full object-cover"
           />
         </div>
 
-        {/* BODY */}
-        <div
-          className="
-            bg-[#1F1D2B]
-            rounded-2xl
-            pt-16 pb-6 px-6
-            w-full text-center
-            shadow-[0_20px_50px_rgba(0,0,0,0.45)]
-            flex flex-col h-[360px]
-            transition-transform duration-300
-            group-hover:-translate-y-1
-          "
-        >
-          {/* OUT OF STOCK RIBBON */}
-          {isOut && (
-            <span className="absolute top-4 right-4 text-xs bg-red-500/90 text-white px-3 py-1 rounded-full">
-              Out
-            </span>
-          )}
+        <h3 className="text-white text-sm font-semibold line-clamp-2 min-h-[40px]">
+          {name}
+        </h3>
 
-          {/* CONTENT */}
-          <div className="flex-1 flex flex-col">
-            <h3 className="text-white text-[15px] font-semibold line-clamp-2 min-h-[40px]">
-              {name}
-            </h3>
-
-            {/* PRICE */}
-            <div className="mt-8 flex justify-center gap-3 items-center">
-              <span className="text-[13px] text-gray-500 line-through">
-                {oldPrice}
-              </span>
-              <span className="text-[15px] text-[#ff9a63] font-semibold">
-                {priceBySize[size]} AED
-              </span>
-            </div>
-
-            <p className="text-gray-400 text-xs mt-1 min-h-[16px]">
-              {stock}
-            </p>
-
-            {/* SIZE SELECT */}
-            <div className="flex justify-center gap-3 mt-5">
-              {["S", "M", "L"].map((sz) => (
-                <button
-                  key={sz}
-                  onClick={() => setSize(sz)}
-                  className={`
-                    px-4 py-1 text-xs rounded-full border
-                    transition-all duration-200
-                    ${
-                      size === sz
-                        ? "bg-[#ff9a63] border-[#ff9a63] text-black scale-105"
-                        : "text-gray-300 border-gray-700 hover:border-[#ff9a63]"
-                    }
-                  `}
-                >
-                  {sz}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* CTA */}
-          <button
-            onClick={handleAddToCart}
-            disabled={isOut || isAdded}
-            className={`
-              mt-6 w-full py-2 rounded-xl font-semibold
-              transition-all duration-200
-              ${
-                isOut
-                  ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                  : isAdded
-                  ? "bg-green-600 text-white"
-                  : "bg-[#ff9a63] text-black hover:bg-[#ffa773] active:scale-95"
-              }
-            `}
-          >
-            {isOut ? "Unavailable" : isAdded ? "Added ✓" : "Add to Cart"}
-          </button>
+        {/* PRICE */}
+        <div className="mt-4 flex justify-center gap-3 items-center">
+          <span className="text-xs text-gray-500 line-through">
+            {oldPrice}
+          </span>
+          <span className="text-[#ff9a63] font-semibold">
+            {priceBySize[size]} AED
+          </span>
         </div>
+
+        <p className="text-gray-400 text-xs mt-1">{stock}</p>
+
+        {/* SIZE */}
+        <div className="flex justify-center gap-3 mt-4">
+          {["S", "M", "L"].map((sz) => (
+            <button
+              key={sz}
+              onClick={() => setSize(sz)}
+              className={`
+                px-4 py-1 text-xs rounded-full border transition
+                ${
+                  size === sz
+                    ? "bg-[#ff9a63] text-black border-[#ff9a63]"
+                    : "border-gray-700 text-gray-300 hover:border-[#ff9a63]"
+                }
+              `}
+            >
+              {sz}
+            </button>
+          ))}
+        </div>
+
+        {/* CTA */}
+        <button
+          ref={btnRef}
+          onClick={handleAddToCart}
+          disabled={isOut || isAdded}
+          className={`
+            mt-5 w-full py-2 rounded-xl font-semibold transition
+            ${
+              isOut
+                ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                : isAdded
+                ? "bg-green-600 text-white"
+                : "bg-[#ff9a63] text-black hover:bg-[#ffa773]"
+            }
+          `}
+        >
+          {isOut ? "Unavailable" : isAdded ? "Added ✓" : "Add"}
+        </button>
       </div>
     </>
   );

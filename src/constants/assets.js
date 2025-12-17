@@ -2,12 +2,18 @@ import food1 from "../assets/images/food1.svg";
 import food2 from "../assets/images/food2.svg";
 import food3 from "../assets/images/food3.svg";
 import food4 from "../assets/images/food4.svg";
+import logo from "../assets/images/golo.svg";
+import bikeImg from "../assets/images/bike.png";
+import smokeImg from "../assets/images/smoke.png";
 
 export const assets ={
 food1,
 food2,
 food3,
-food4   
+food4,
+logo,
+bikeImg,
+smokeImg   
 }
 
 export const DISHDATA = [
