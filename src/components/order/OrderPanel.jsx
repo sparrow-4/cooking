@@ -1,8 +1,20 @@
 import React from "react";
 import { FiTrash2, FiArrowLeft } from "react-icons/fi";
 import OrderSummary from "./OrderSummary";
+import { motion, AnimatePresence } from "framer-motion";
+import { Utensils, ShoppingBag } from "lucide-react";
 
-const OrderPanel = ({ cart, setCart, isMobile, onBack, isTablet, onPlaceOrder }) => {
+
+const OrderPanel = ({
+  cart,
+  setCart,
+  isMobile,
+  onBack,
+  isTablet,
+  onPlaceOrder,
+  orderType,
+  setOrderType,
+}) => {
   // Increase / decrease quantity (minimum 1)
   const updateQty = (cartId, delta) => {
     setCart((prev) =>
@@ -13,7 +25,7 @@ const OrderPanel = ({ cart, setCart, isMobile, onBack, isTablet, onPlaceOrder })
       )
     );
   };
-  
+
   // Remove item completely
   const removeItem = (cartId) => {
     setCart((prev) => prev.filter((item) => item.cartId !== cartId));
@@ -33,23 +45,59 @@ const OrderPanel = ({ cart, setCart, isMobile, onBack, isTablet, onPlaceOrder })
         overflow-hidden
       "
     >
-     <div className="flex items-center gap-3 mb-4">
-  {(isMobile || isTablet) && (
-    <button
-      onClick={onBack}
-      className="p-2 rounded-lg bg-[#26252d] text-white"
-    >
-      <FiArrowLeft size={18} />
-    </button>
-  )}
-  <h2 className="text-xl font-semibold text-white">Orders</h2>
+      <div className="flex items-center gap-3 mb-4">
+        {(isMobile || isTablet) && (
+          <button
+            onClick={onBack}
+            className="p-2 rounded-lg bg-[#26252d] text-white"
+          >
+            <FiArrowLeft size={18} />
+          </button>
+        )}
+        <h2 className="text-xl font-semibold text-white">Orders</h2>
+      </div>
+<div className="relative flex gap-2 mb-4 bg-[#26252d] p-1 rounded-xl">
+  {/* Sliding indicator */}
+  <motion.div
+    layout
+    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+    className={`absolute top-1 bottom-1 w-1/2 rounded-lg bg-[#ff9a63]`}
+    style={{
+      left: orderType === "DINE_IN" ? "4px" : "50%",
+    }}
+  />
+
+  {/* DINE IN */}
+  <motion.button
+    whileTap={{ scale: 0.96 }}
+    onClick={() => setOrderType("DINE_IN")}
+    className={`relative z-10 flex-1 py-2 rounded-lg text-sm font-medium
+      flex items-center justify-center gap-2
+      ${orderType === "DINE_IN" ? "text-black" : "text-gray-300"}
+    `}
+  >
+    <Utensils size={16} />
+    Dine In
+  </motion.button>
+
+  {/* TAKE AWAY */}
+  <motion.button
+    whileTap={{ scale: 0.96 }}
+    onClick={() => setOrderType("TAKE_AWAY")}
+    className={`relative z-10 flex-1 py-2 rounded-lg text-sm font-medium
+      flex items-center justify-center gap-2
+      ${orderType === "TAKE_AWAY" ? "text-black" : "text-gray-300"}
+    `}
+  >
+    <ShoppingBag size={16} />
+    Take Away
+  </motion.button>
 </div>
 
 
-
       {/* ===== ITEMS LIST ===== */}
-     <div
-  className="
+      <div
+        className="
     space-y-4
     overflow-y-auto
     no-scrollbar
@@ -58,8 +106,7 @@ const OrderPanel = ({ cart, setCart, isMobile, onBack, isTablet, onPlaceOrder })
     md:max-h-[80vh]
     lg:max-h-[70vh]
   "
->
-
+      >
         {cart.length === 0 && (
           <p className="text-gray-400 text-sm text-center mt-10">
             Cart is empty
@@ -131,6 +178,16 @@ const OrderPanel = ({ cart, setCart, isMobile, onBack, isTablet, onPlaceOrder })
 
               {/* Order note */}
               <input
+                value={item.note || ""}
+                onChange={(e) =>
+                  setCart((prev) =>
+                    prev.map((i) =>
+                      i.cartId === item.cartId
+                        ? { ...i, note: e.target.value }
+                        : i
+                    )
+                  )
+                }
                 placeholder="Order Note..."
                 className="bg-[#221f26] text-gray-300 text-xs w-full mt-3 p-2 rounded-lg outline-none"
               />
@@ -141,10 +198,9 @@ const OrderPanel = ({ cart, setCart, isMobile, onBack, isTablet, onPlaceOrder })
 
       {/* ===== SUMMARY (STICKY AT BOTTOM) ===== */}
       <div className="mt-auto pt-4">
-        <OrderSummary 
-        cart={cart} 
-        onPlaceOrder={onPlaceOrder}
-        />
+        <OrderSummary cart={cart}
+  onPlaceOrder={onPlaceOrder}
+  orderType={orderType} />
       </div>
     </div>
   );

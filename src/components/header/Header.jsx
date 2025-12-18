@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import SearchBar from "./SearchBar";
 import { FiShoppingCart } from "react-icons/fi";
 
-const Header = ({ toggleCart, isMobile, isTablet, totalItems}) => {
+const Header = ({ toggleCart, isMobile, isTablet, totalItems, onSearch }) => {
+
   const [dateTime, setDateTime] = useState("");
 
   useEffect(() => {
@@ -37,8 +38,12 @@ const Header = ({ toggleCart, isMobile, isTablet, totalItems}) => {
 
       {/* RIGHT */}
       <div className="flex items-center gap-4">
-        <div className="hidden sm:block">
-          <SearchBar placeholder="Search for food, coffee, etc..." />
+        <div className="w-full md:w-auto">
+          <SearchBar
+  placeholder="Search for food, coffee, etc..."
+  onSearch={onSearch}
+/>
+
         </div>
 
         {/* TOP CART ICON — DESKTOP ONLY */}

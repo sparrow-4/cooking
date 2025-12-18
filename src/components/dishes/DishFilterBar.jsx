@@ -1,7 +1,7 @@
 import React from "react";
 import DropdownButton from "../DropdownButton";
 
-const DishFilterBar = () => {
+const DishFilterBar = ({ onSearch }) => {
   return (
     <div className="flex items-center justify-between mt-8 pb-2 ">
       
@@ -11,7 +11,7 @@ const DishFilterBar = () => {
       </h2>
 
       {/* Dropdown */}
-      <DropdownButton label="Dine In" />
+      <DropdownButton onSearch={onSearch} />
     </div>
   );
 };

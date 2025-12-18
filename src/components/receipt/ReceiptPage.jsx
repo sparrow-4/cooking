@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
+const PACKING_CHARGE = 2.0; // AED
+
 const backdrop = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
@@ -17,12 +19,20 @@ const card = {
 };
 
 const ReceiptPage = ({ data, onClose }) => {
+  if (!data) return null;
+
+  const orderType = data.orderType?.toUpperCase();
+
   const subtotal = data.items.reduce(
-    (sum, i) => sum + i.qty * parseFloat(i.price),
+    (sum, item) => sum + item.qty * parseFloat(item.price),
     0
   );
+
+  const packingCharge =
+    orderType === "TAKE_AWAY" ? PACKING_CHARGE : 0;
+
   const tax = subtotal * 0.05;
-  const total = subtotal + tax;
+  const total = subtotal + tax + packingCharge;
 
   return (
     <motion.div
@@ -58,8 +68,12 @@ const ReceiptPage = ({ data, onClose }) => {
               <Check size={22} strokeWidth={3} />
             </div>
             <div>
-              <h2 className="font-semibold text-lg">Payment Successful</h2>
-              <p className="text-xs opacity-80">{data.orderId}</p>
+              <h2 className="font-semibold text-lg">
+                Payment Successful
+              </h2>
+              <p className="text-xs opacity-80">
+                {data.orderId}
+              </p>
             </div>
           </div>
         </div>
@@ -70,34 +84,76 @@ const ReceiptPage = ({ data, onClose }) => {
             {new Date(data.date).toLocaleString()}
           </p>
 
+          {/* ITEMS */}
           {data.items.map((item) => (
-            <div key={item.cartId} className="flex justify-between border-b border-white/10 pb-2">
+            <div
+              key={item.cartId}
+              className="flex justify-between border-b border-white/10 pb-2"
+            >
               <div>
-                <p>{item.name}</p>
-                <p className="text-xs text-gray-400">Qty × {item.qty}</p>
+                <p className="text-xs text-gray-400">
+                  Qty × {item.qty}
+                </p>
+
+                {item.note && (
+                  <p className="text-xs text-red-400 italic">
+                    Note: {item.note}
+                  </p>
+                )}
               </div>
-              <span>{(item.qty * item.price).toFixed(2)} AED</span>
+              <span>
+                {(item.qty * item.price).toFixed(2)} AED
+              </span>
             </div>
           ))}
 
+          {/* ORDER TYPE */}
+          {orderType && (
+            <div className="flex justify-between text-gray-300 text-sm pt-2">
+              <span>Order Type</span>
+              <span className="font-medium">
+                {orderType === "DINE_IN"
+                  ? "Dine In"
+                  : "Take Away"}
+              </span>
+            </div>
+          )}
+
+          {/* TOTALS */}
           <div className="pt-3 space-y-2">
             <div className="flex justify-between text-gray-300">
               <span>Subtotal</span>
               <span>{subtotal.toFixed(2)} AED</span>
             </div>
+
             <div className="flex justify-between text-gray-300">
               <span>Tax (5%)</span>
               <span>{tax.toFixed(2)} AED</span>
             </div>
+
+            {orderType === "TAKE_AWAY" && (
+              <div className="flex justify-between text-gray-300">
+                <span>Packing Charge</span>
+                <span>{PACKING_CHARGE.toFixed(2)} AED</span>
+              </div>
+            )}
+
             <div className="flex justify-between font-bold text-lg pt-2 border-t border-white/10">
               <span>Total</span>
               <span>{total.toFixed(2)} AED</span>
             </div>
           </div>
 
+          {/* CLOSE */}
           <button
             onClick={onClose}
-            className="w-full mt-4 py-3 rounded-xl bg-[#ff9a63] text-black font-semibold"
+            className="
+              w-full mt-4 py-3
+              rounded-xl
+              bg-[#ff9a63]
+              text-black
+              font-semibold
+            "
           >
             Close
           </button>

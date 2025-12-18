@@ -1,19 +1,34 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { gsap } from "gsap";
-import { assets } from "../../constants/assets"; 
+import { assets } from "../../constants/assets";
 
-const OrderSummary = ({ cart, onPlaceOrder }) => {
+const PACKING_CHARGE = 2.0; // AED
+
+const OrderSummary = ({ cart, onPlaceOrder, orderType }) => {
   const subtotal = cart.reduce(
     (acc, item) => acc + item.qty * parseFloat(item.price),
     0
   );
 
+  const packingCharge = orderType === "TAKE_AWAY" ? PACKING_CHARGE : 0;
   const tax = subtotal * 0.05;
-  const total = subtotal + tax;
+  const total = subtotal + tax + packingCharge;
 
+  const packingRef = useRef(null);
   const bikeRef = useRef(null);
   const smokeRef = useRef([]);
   const [loading, setLoading] = useState(false);
+
+  /* ✅ Packing charge animation (ON TYPE CHANGE) */
+  useEffect(() => {
+    if (orderType === "TAKE_AWAY" && packingRef.current) {
+      gsap.fromTo(
+        packingRef.current,
+        { opacity: 0, y: -8 },
+        { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }
+      );
+    }
+  }, [orderType]);
 
   const handlePlaceOrder = () => {
     if (cart.length === 0 || loading) return;
@@ -61,6 +76,16 @@ const OrderSummary = ({ cart, onPlaceOrder }) => {
         <span>Subtotal</span>
         <span>{subtotal.toFixed(2)} AED</span>
       </div>
+
+      {orderType === "TAKE_AWAY" && (
+        <div
+          ref={packingRef}
+          className="flex justify-between text-gray-300 text-sm mb-2"
+        >
+          <span>Packing Charge</span>
+          <span>{PACKING_CHARGE.toFixed(2)} AED</span>
+        </div>
+      )}
 
       <div className="flex justify-between text-gray-300 text-sm mb-2">
         <span>Tax (5%)</span>

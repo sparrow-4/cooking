@@ -1,29 +1,20 @@
 import React from "react";
 import DishCard from "./DishCard";
-import { DISHDATA } from "../../constants/assets";
 
-const DishGrid = ({ showCart, addToCart, cart }) => {
+const DishGrid = ({ data, addToCart, cart }) => {
   return (
     <div
       className="
-    mt-6
-    grid
-    gap-x-4 gap-y-8
-
-    /* ✅ BELOW 270px → FORCE 1 COLUMN */
-    [@media(max-width:270px)]:grid-cols-1
-
-    /* 🔥 AUTO RESPONSIVE GRID */
-    [grid-template-columns:repeat(auto-fit,minmax(160px,1fr))]
-
-    /* TABLET */
-    md:[grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]
-
-    /* DESKTOP */
-    xl:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]
-  "
+        mt-6
+        grid
+        gap-x-4 gap-y-8
+        [@media(max-width:270px)]:grid-cols-1
+        [grid-template-columns:repeat(auto-fit,minmax(160px,1fr))]
+        md:[grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]
+        xl:[grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]
+      "
     >
-      {DISHDATA.map((dish) => (
+      {data.map((dish) => (
         <DishCard
           key={dish.id}
           name={dish.name}

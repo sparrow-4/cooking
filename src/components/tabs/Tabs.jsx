@@ -1,27 +1,31 @@
-import React, { useState } from "react";
+import React from "react";
 import TabItem from "./TabItem";
 
-const Tabs = () => {
-  const [activeTab, setActiveTab] = useState("today");
-
+const Tabs = ({ active, setActive }) => {
   return (
-    <div className="flex space-x-8 mt-8  ">
+    <div className="flex space-x-8 mt-8">
+      <TabItem
+        label="All"
+        active={active === "ALL"}
+        onClick={() => setActive("ALL")}
+      />
+
       <TabItem
         label="Today Special"
-        active={activeTab === "today"}
-        onClick={() => setActiveTab("today")}
+        active={active === "TODAY"}
+        onClick={() => setActive("TODAY")}
       />
 
       <TabItem
         label="Our Specials"
-        active={activeTab === "specials"}
-        onClick={() => setActiveTab("specials")}
+        active={active === "SPECIAL"}
+        onClick={() => setActive("SPECIAL")}
       />
 
       <TabItem
         label="South Indian Special"
-        active={activeTab === "south"}
-        onClick={() => setActiveTab("south")}
+        active={active === "SOUTH_INDIAN"}
+        onClick={() => setActive("SOUTH_INDIAN")}
       />
     </div>
   );

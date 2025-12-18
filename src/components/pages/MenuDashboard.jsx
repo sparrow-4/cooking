@@ -6,14 +6,17 @@ import DishGrid from "../dishes/DishGrid";
 import OrderPanel from "../order/OrderPanel";
 import Sidebar from "../SideBar/Sidebar";
 import MobileNav from "../MobileNav";
-import ReceiptPage from "../receipt/ReceiptPage"; // ✅ REQUIRED
+import ReceiptPage from "../receipt/ReceiptPage"; 
 import { FiShoppingCart } from "react-icons/fi";
+import { DISHDATA } from "../../constants/assets";
+
 
 function MenuDashboard() {
   const [showCart, setShowCart] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
-  const [activeNav, setActiveNav] = useState("home");
+  const [activeNav, setActiveNav] = useState("TODAY");
+
   const [cart, setCart] = useState([]);
 
   // ✅ RECEIPT STATE
@@ -22,6 +25,26 @@ function MenuDashboard() {
 
   /* ===== TOTAL ITEMS ===== */
   const totalItems = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+
+  const [searchQuery, setSearchQuery] = useState("");
+const filteredDishes = DISHDATA
+  // 1️⃣ Category filter
+  .filter((item) => {
+    if (activeNav === "ALL") return true;
+    return item.category === activeNav;
+  })
+
+  // 2️⃣ Search filter
+  .filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+const [orderType, setOrderType] = useState("DINE_IN");
+
+
+
+
+
 
   /* ===== DEVICE DETECTION ===== */
   useEffect(() => {
@@ -59,6 +82,7 @@ function MenuDashboard() {
       orderId: `ORD-${Date.now()}`,
       date: new Date(),
       items: cart,
+      orderType,
     });
 
     setShowReceipt(true);
@@ -106,18 +130,19 @@ function MenuDashboard() {
               isMobile={isMobile}
               isTablet={isTablet}
               totalItems={totalItems}
+              onSearch={setSearchQuery}
             />
-            <Tabs />
-            <DishFilterBar />
+            <Tabs active={activeNav} setActive={setActiveNav} />
+
+            <DishFilterBar onSearch={setSearchQuery} />
           </div>
 
-          <DishGrid
-            showCart={showCart}
-            isMobile={isMobile}
-            isTablet={isTablet}
-            addToCart={addToCart}
-            cart={cart}
-          />
+         <DishGrid
+  data={filteredDishes}
+  addToCart={addToCart}
+  cart={cart}
+/>
+
         </div>
 
         {/* ===== CART PANEL ===== */}
@@ -135,6 +160,8 @@ function MenuDashboard() {
               isTablet={isTablet}
               onBack={toggleCart}
               onPlaceOrder={handlePlaceOrder}
+              orderType={orderType}
+  setOrderType={setOrderType}
             />
           </div>
         )}
