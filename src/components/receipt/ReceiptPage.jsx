@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
-const PACKING_CHARGE = 2.0; // AED
+const PACKING_CHARGE = 2.0;
+const DELIVERY_CHARGE = 5.0;
 
 const backdrop = {
   hidden: { opacity: 0 },
@@ -28,11 +29,16 @@ const ReceiptPage = ({ data, onClose }) => {
     0
   );
 
-  const packingCharge =
-    orderType === "TAKE_AWAY" ? PACKING_CHARGE : 0;
-
+  const packingCharge = orderType === "TAKE_AWAY" ? PACKING_CHARGE : 0;
+  const deliveryCharge = orderType === "DELIVERY" ? DELIVERY_CHARGE : 0;
   const tax = subtotal * 0.05;
-  const total = subtotal + tax + packingCharge;
+  const total = subtotal + tax + packingCharge + deliveryCharge;
+
+  const ORDER_TYPE_LABELS = {
+    DINE_IN: "Dine In",
+    TAKE_AWAY: "Take Away",
+    DELIVERY: "Delivery",
+  };
 
   return (
     <motion.div
@@ -68,12 +74,8 @@ const ReceiptPage = ({ data, onClose }) => {
               <Check size={22} strokeWidth={3} />
             </div>
             <div>
-              <h2 className="font-semibold text-lg">
-                Payment Successful
-              </h2>
-              <p className="text-xs opacity-80">
-                {data.orderId}
-              </p>
+              <h2 className="font-semibold text-lg">Payment Successful</h2>
+              <p className="text-xs opacity-80">{data.orderId}</p>
             </div>
           </div>
         </div>
@@ -91,9 +93,7 @@ const ReceiptPage = ({ data, onClose }) => {
               className="flex justify-between border-b border-white/10 pb-2"
             >
               <div>
-                <p className="text-xs text-gray-400">
-                  Qty × {item.qty}
-                </p>
+                <p className="text-xs text-gray-400">Qty × {item.qty}</p>
 
                 {item.note && (
                   <p className="text-xs text-red-400 italic">
@@ -101,9 +101,7 @@ const ReceiptPage = ({ data, onClose }) => {
                   </p>
                 )}
               </div>
-              <span>
-                {(item.qty * item.price).toFixed(2)} AED
-              </span>
+              <span>{(item.qty * item.price).toFixed(2)} AED</span>
             </div>
           ))}
 
@@ -112,9 +110,7 @@ const ReceiptPage = ({ data, onClose }) => {
             <div className="flex justify-between text-gray-300 text-sm pt-2">
               <span>Order Type</span>
               <span className="font-medium">
-                {orderType === "DINE_IN"
-                  ? "Dine In"
-                  : "Take Away"}
+                {ORDER_TYPE_LABELS[orderType]}
               </span>
             </div>
           )}
@@ -137,6 +133,12 @@ const ReceiptPage = ({ data, onClose }) => {
                 <span>{PACKING_CHARGE.toFixed(2)} AED</span>
               </div>
             )}
+            {orderType === "DELIVERY" && (
+              <div className="flex justify-between text-gray-300">
+                <span>Delivery Charge</span>
+                <span>{DELIVERY_CHARGE.toFixed(2)} AED</span>
+              </div>
+            )}
 
             <div className="flex justify-between font-bold text-lg pt-2 border-t border-white/10">
               <span>Total</span>
@@ -150,7 +152,7 @@ const ReceiptPage = ({ data, onClose }) => {
             className="
               w-full mt-4 py-3
               rounded-xl
-              bg-[#ff9a63]
+              bg-primary
               text-black
               font-semibold
             "

@@ -3,6 +3,8 @@ import { gsap } from "gsap";
 import { assets } from "../../constants/assets";
 
 const PACKING_CHARGE = 2.0; // AED
+const DELIVERY_CHARGE = 5.0;
+
 
 const OrderSummary = ({ cart, onPlaceOrder, orderType }) => {
   const subtotal = cart.reduce(
@@ -11,24 +13,36 @@ const OrderSummary = ({ cart, onPlaceOrder, orderType }) => {
   );
 
   const packingCharge = orderType === "TAKE_AWAY" ? PACKING_CHARGE : 0;
+  const deliveryCharge = orderType === "DELIVERY" ? DELIVERY_CHARGE : 0;
   const tax = subtotal * 0.05;
-  const total = subtotal + tax + packingCharge;
+  const total = subtotal + tax + packingCharge + deliveryCharge;
+
 
   const packingRef = useRef(null);
+  const deliveryRef = useRef(null);
   const bikeRef = useRef(null);
   const smokeRef = useRef([]);
   const [loading, setLoading] = useState(false);
 
-  /* ✅ Packing charge animation (ON TYPE CHANGE) */
-  useEffect(() => {
-    if (orderType === "TAKE_AWAY" && packingRef.current) {
-      gsap.fromTo(
-        packingRef.current,
-        { opacity: 0, y: -8 },
-        { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }
-      );
-    }
-  }, [orderType]);
+  /* ✅ Packing charge animation (ON TYPE CHANGE, delivery) */
+useEffect(() => {
+  if (orderType === "TAKE_AWAY" && packingRef.current) {
+    gsap.fromTo(
+      packingRef.current,
+      { opacity: 0, y: -8 },
+      { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }
+    );
+  }
+
+  if (orderType === "DELIVERY" && deliveryRef.current) {
+    gsap.fromTo(
+      deliveryRef.current,
+      { opacity: 0, y: -8 },
+      { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }
+    );
+  }
+}, [orderType]);
+
 
   const handlePlaceOrder = () => {
     if (cart.length === 0 || loading) return;
@@ -84,6 +98,15 @@ const OrderSummary = ({ cart, onPlaceOrder, orderType }) => {
         >
           <span>Packing Charge</span>
           <span>{PACKING_CHARGE.toFixed(2)} AED</span>
+        </div>
+      )}
+      {orderType === "DELIVERY" && (
+        <div
+          ref={deliveryRef}
+          className="flex justify-between text-gray-300 text-sm mb-2"
+        >
+          <span>Delivery Charge</span>
+          <span>{DELIVERY_CHARGE.toFixed(2)} AED</span>
         </div>
       )}
 

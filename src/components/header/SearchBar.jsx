@@ -17,7 +17,7 @@ const SearchBar = ({ placeholder, onSearch }) => {
         className={`
           absolute left-4 top-1/2 -translate-y-1/2
           transition-all duration-300
-          ${value ? "text-orange-400 scale-110" : "text-gray-400"}
+          ${value ? "text-primary scale-110" : "text-gray-400"}
         `}
         size={18}
       />

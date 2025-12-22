@@ -17,13 +17,9 @@ const DishGrid = ({ data, addToCart, cart }) => {
       {data.map((dish) => (
         <DishCard
           key={dish.id}
-          name={dish.name}
-          img={dish.img}
-          oldPrice={dish.oldPrice}
-          newPrice={dish.newPrice}
-          stock={dish.stock}
-          onAddToCart={addToCart}
-          cart={cart}
+  dish={dish}
+  onAddToCart={addToCart}
+  cart={cart}
         />
       ))}
     </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { assets } from "../../constants/assets";
+import { SIDEBAR_ITEMS } from "../../constants/sidebar.config";
 import SidebarItem from "./SidebarItem";
 import { IoLogOutOutline } from "react-icons/io5";
 
@@ -9,7 +10,7 @@ const Sidebar = () => {
   const { pathname } = useLocation();
 
   return (
-    <aside className="w-[88px] h-screen bg-[#1F1D2B] flex flex-col items-center py-8">
+    <aside className="w-[88px] h-screen bg-secondary flex flex-col items-center py-8">
 
       {/* LOGO */}
       <div className="mb-8">
@@ -23,48 +24,25 @@ const Sidebar = () => {
       </div>
 
       {/* MAIN NAV */}
-            <div className="flex flex-col items-center gap-4">
-            <SidebarItem
-                icon={assets.icons.home}
-                active={pathname === "/menu"}
-                onClick={() => navigate("/menu")}
-              />
-
-        <SidebarItem
-          icon={assets.icons.settings}
-          active={pathname === "/menu/notifications"}
-          onClick={() => navigate("/menu/notifications")}
-        />
-
-        <SidebarItem
-          icon={assets.icons.favorites}
-          active={pathname === "/menu/favorites"}
-          onClick={() => navigate("/menu/favorites")}
-        />
-
-        <SidebarItem
-          icon={assets.icons.messages}
-          active={pathname === "/menu/messages"}
-          onClick={() => navigate("/menu/messages")}
-        />
-
-        <SidebarItem
-          icon={assets.icons.bell}
-          active={pathname === "/menu/settings"}
-          onClick={() => navigate("/menu/settings")}
-        />
+      <div className="flex flex-col items-center gap-4">
+        {SIDEBAR_ITEMS.map((item) => (
+          <SidebarItem
+            key={item.id}
+            icon={item.icon}
+            active={pathname === item.path}
+            onClick={() => navigate(item.path)}
+          />
+        ))}
       </div>
 
       <div className="flex-grow" />
 
       {/* LOGOUT */}
-<SidebarItem
-  icon={IoLogOutOutline}
-  active={false}
-  onClick={() => navigate("/")}
-/>
-
-
+      <SidebarItem
+        icon={IoLogOutOutline}
+        active={false}
+        onClick={() => navigate("/")}
+      />
     </aside>
   );
 };

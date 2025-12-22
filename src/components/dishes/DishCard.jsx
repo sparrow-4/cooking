@@ -1,15 +1,7 @@
-import React, { useState, useMemo, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { gsap } from "gsap";
 
-const DishCard = ({
-  name,
-  img,
-  oldPrice,
-  newPrice,
-  stock,
-  onAddToCart,
-  cart,
-}) => {
+const DishCard = ({ dish, onAddToCart, cart }) => {
   const [size, setSize] = useState("M");
   const [showToast, setShowToast] = useState(false);
 
@@ -17,23 +9,10 @@ const DishCard = ({
   const imgRef = useRef(null);
   const btnRef = useRef(null);
 
-  /* ===== PRICE LOGIC ===== */
-  const basePrice = useMemo(() => {
-    const numeric = parseFloat(String(newPrice).replace(/[^\d.]/g, ""));
-    return Number.isFinite(numeric) ? numeric : 0;
-  }, [newPrice]);
+  const priceData = dish.pricing[size];
+  const isOut = dish.stock === 0;
 
-  const priceBySize = useMemo(
-    () => ({
-      S: +(basePrice * 0.8).toFixed(2),
-      M: +basePrice.toFixed(2),
-      L: +(basePrice * 1.3).toFixed(2),
-    }),
-    [basePrice]
-  );
-
-  const isOut = stock === "Out of Stock";
-  const cartId = `${name}-${size}`;
+  const cartId = `${dish.id}-${size}`;
   const isAdded = cart?.some((item) => item.cartId === cartId);
 
   /* ===== GSAP HOVER ===== */
@@ -73,14 +52,12 @@ const DishCard = ({
   const handleAddToCart = () => {
     if (isOut || isAdded) return;
 
-    // Button press animation
     gsap.fromTo(
       btnRef.current,
       { scale: 1 },
       { scale: 0.92, duration: 0.1, yoyo: true, repeat: 1 }
     );
 
-    // Card glow pulse
     gsap.fromTo(
       cardRef.current,
       { boxShadow: "0 0 0 rgba(255,154,99,0)" },
@@ -94,10 +71,12 @@ const DishCard = ({
 
     onAddToCart({
       cartId,
-      name,
-      img,
+      id: dish.id,
+      name: dish.name,
+      img: dish.image,
       size,
-      price: priceBySize[size],
+      price: priceData.price,
+      oldPrice: priceData.oldPrice,
       qty: 1,
     });
 
@@ -111,7 +90,7 @@ const DishCard = ({
       {showToast && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[999]">
           <div className="bg-green-600 text-white px-6 py-3 rounded-2xl shadow-lg text-sm font-semibold">
-            ✓ {name} added to cart
+            ✓ {dish.name} added to cart
           </div>
         </div>
       )}
@@ -121,37 +100,39 @@ const DishCard = ({
         ref={cardRef}
         onMouseEnter={onHover}
         onMouseLeave={onLeave}
-        className="relative mt-10 bg-[#1F1D2B] rounded-2xl px-6 pt-16 pb-5 text-center transition"
+        className="relative mt-10 bg-[#1F1D2B] rounded-2xl px-6 pt-16 pb-5 text-center"
       >
         {/* IMAGE */}
         <div className="absolute -top-10 left-1/2 -translate-x-1/2">
           <img
             ref={imgRef}
-            src={img}
-            alt={name}
+            src={dish.image}
+            alt={dish.name}
             className="w-24 h-24 rounded-full object-cover"
           />
         </div>
 
-        <h3 className="text-white text-sm font-semibold line-clamp-2 min-h-[40px]">
-          {name}
+        <h3 className="text-white text-md font-sans line-clamp-2 min-h-[40px]">
+          {dish.name}
         </h3>
 
         {/* PRICE */}
         <div className="mt-4 flex justify-center gap-3 items-center">
           <span className="text-xs text-gray-500 line-through">
-            {oldPrice}
+            {priceData.oldPrice} {dish.currency}
           </span>
-          <span className="text-[#ff9a63] font-semibold">
-            {priceBySize[size]} AED
+          <span className="text-primary font-semibold">
+            {priceData.price} {dish.currency}
           </span>
         </div>
 
-        <p className="text-gray-400 text-xs mt-1">{stock}</p>
+        <p className="text-gray-400 text-xs mt-1">
+          {dish.stock} available
+        </p>
 
         {/* SIZE */}
         <div className="flex justify-center gap-3 mt-4">
-          {["S", "M", "L"].map((sz) => (
+          {dish.sizes.map((sz) => (
             <button
               key={sz}
               onClick={() => setSize(sz)}
@@ -159,8 +140,8 @@ const DishCard = ({
                 px-4 py-1 text-xs rounded-full border transition
                 ${
                   size === sz
-                    ? "bg-[#ff9a63] text-black border-[#ff9a63]"
-                    : "border-gray-700 text-gray-300 hover:border-[#ff9a63]"
+                    ? "bg-primary text-black border-primary"
+                    : "border-gray-700 text-gray-300 hover:border-primary"
                 }
               `}
             >
@@ -181,7 +162,7 @@ const DishCard = ({
                 ? "bg-gray-600 text-gray-400 cursor-not-allowed"
                 : isAdded
                 ? "bg-green-600 text-white"
-                : "bg-[#ff9a63] text-black hover:bg-[#ffa773]"
+                : "bg-primary text-black hover:bg-[#fa6008]"
             }
           `}
         >

@@ -63,7 +63,7 @@ const SidebarItem = ({ icon, active, onClick }) => {
           className="
             relative z-20
             w-13 h-13
-            bg-[#ff9a63]
+            bg-primary
             rounded-xl
             flex items-center justify-center
             text-white
@@ -93,7 +93,7 @@ const SidebarItem = ({ icon, active, onClick }) => {
           w-11 h-11
           flex items-center justify-center
           rounded-xl
-          text-[#F99147]
+          text-primary
           hover:text-white
           hover:bg-[#2a2930]
           transition-all duration-200

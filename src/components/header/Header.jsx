@@ -30,10 +30,10 @@ const Header = ({ toggleCart, isMobile, isTablet, totalItems, onSearch }) => {
     <div className="w-full flex flex-col md:flex-row md:items-center md:justify-between  gap-4">
       {/* LEFT */}
       <div>
-        <h1 className="text-2xl md:text-3xl font-semibold text-white pt-8">
+        <h1 className="text-2xl md:text-3xl font-sans font-semibold text-white pt-8">
           Chef Kitchen
         </h1>
-        <p className="text-white mt-1 text-base md:text-xl">{dateTime}</p>
+        <p className="text-white mt-1 font-sans text-base md:text-xl">{dateTime}</p>
       </div>
 
       {/* RIGHT */}
@@ -59,7 +59,7 @@ const Header = ({ toggleCart, isMobile, isTablet, totalItems, onSearch }) => {
       absolute -top-1 -right-1
       min-w-[18px] h-[18px]
       px-1
-      bg-[#ff9a63]
+      bg-primary
       text-black text-[11px] font-semibold
       rounded-full
       flex items-center justify-center

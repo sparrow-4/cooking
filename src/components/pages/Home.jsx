@@ -3,9 +3,9 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
-import heroImg from "../../assets/images/home.svg";
-import bgImage from "../../assets/images/bg.svg";
-import logo from "../../assets/images/img.svg";
+import heroImg from "../../assets/svg/home.svg";
+import bgImage from "../../assets/svg/bg.svg";
+import logo from "../../assets/svg/img.svg";
 
 const Home = () => {
  const navigate = useNavigate();
@@ -93,7 +93,7 @@ const Home = () => {
               boxShadow: "0 8px 20px rgba(255,153,99,0.4)",
             }}
             whileTap={{ scale: 0.95 }}
-            className="w-full bg-[#ff9a63] hover:bg-[#ff7f33] transition-all
+            className="w-full bg-primary hover:bg-[#ff7f33] transition-all
                text-black font-medium py-3 rounded-lg text-base md:text-lg"
           >
             Explore Menu

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "../header/Header";
-import Tabs from "../tabs/Tabs";
+import CategoryTabs from "../tabs/CategoryTabs";
 import DishFilterBar from "../dishes/DishFilterBar";
 import DishGrid from "../dishes/DishGrid";
 import OrderPanel from "../order/OrderPanel";
@@ -15,7 +15,7 @@ function MenuDashboard() {
   const [showCart, setShowCart] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
-  const [activeNav, setActiveNav] = useState("TODAY");
+  const [activeNav, setActiveNav] = useState("ALL");
 
   const [cart, setCart] = useState([]);
 
@@ -132,7 +132,7 @@ const [orderType, setOrderType] = useState("DINE_IN");
               totalItems={totalItems}
               onSearch={setSearchQuery}
             />
-            <Tabs active={activeNav} setActive={setActiveNav} />
+            <CategoryTabs active={activeNav} setActive={setActiveNav} />
 
             <DishFilterBar onSearch={setSearchQuery} />
           </div>
@@ -174,7 +174,7 @@ const [orderType, setOrderType] = useState("DINE_IN");
           className="
             fixed bottom-28 right-6 z-[999]
             w-14 h-14
-            bg-[#ff9a63]
+            bg-primary
             rounded-full
             flex items-center justify-center
             shadow-[0_10px_25px_rgba(255,154,99,0.45)]

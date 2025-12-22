@@ -6,7 +6,7 @@ const DishFilterBar = ({ onSearch }) => {
     <div className="flex items-center justify-between mt-8 pb-2 ">
       
       {/* Left Label */}
-      <h2 className="text-lg font-medium text-gray-200">
+      <h2 className="text-lg font-medium font-sans text-gray-200">
         Choose Dishes
       </h2>
 
