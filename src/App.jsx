@@ -17,7 +17,7 @@ import SettingsPage from "./components/pages/SettingsPage";
 // TODO : Move all svg icons to the folder named "SVG"  and keep only images under the "images" folder ✅
 // TODO : Use the same colors and design exactly like in the figma design [ eg:button color  ]✅
 // TODO : Use the same fonts and font sizes exactly like in the figma design [ Currently using ui-sans-serif , use Inter]✅
-// TODO : The price will change on the basis of size
+// TODO : The price will change on the basis of size ✅
 
 const App = () => {
   return (

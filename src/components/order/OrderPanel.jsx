@@ -97,7 +97,7 @@ const OrderPanel = ({
       {/* ITEMS LIST */}
       <div className="space-y-4 overflow-y-auto no-scrollbar pr-2 max-h-[55vh] md:max-h-[80vh] lg:max-h-[70vh]">
         {cart.length === 0 && (
-          <p className="text-gray-400 text-sm text-center mt-10">
+          <p className="text-gray-400 text-sm text-center mt-50">
             Cart is empty
           </p>
         )}
@@ -196,6 +196,7 @@ const OrderPanel = ({
       </div>
 
       {/* SUMMARY */}
+      {cart.length > 0 && (
       <div className="mt-auto pt-4">
         <OrderSummary
           cart={cart}
@@ -203,6 +204,7 @@ const OrderPanel = ({
           orderType={orderType}
         />
       </div>
+      )}
     </div>
   );
 };
