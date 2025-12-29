@@ -167,6 +167,8 @@ const [orderType, setOrderType] = useState("DINE_IN");
         )}
       </div>
 
+      
+
       {/* ===== FLOATING CART (MOBILE + TABLET) ===== */}
       {(isMobile || isTablet) && !showCart && (
         <button

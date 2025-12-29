@@ -2,6 +2,16 @@ import React from "react";
 import DishCard from "./DishCard";
 
 const DishGrid = ({ data, addToCart, cart }) => {
+
+  if (!data || data.length === 0) {
+    return (
+      <div className="mt-16 w-full text-center text-gray-400">
+        <p className="text-lg font-semibold">No dishes found</p>
+        <p className="text-sm mt-1">Try a different search or category</p>
+      </div>
+    );
+  }
+
   return (
     <div
       className="
@@ -17,9 +27,9 @@ const DishGrid = ({ data, addToCart, cart }) => {
       {data.map((dish) => (
         <DishCard
           key={dish.id}
-  dish={dish}
-  onAddToCart={addToCart}
-  cart={cart}
+          dish={dish}
+          onAddToCart={addToCart}
+          cart={cart}
         />
       ))}
     </div>
