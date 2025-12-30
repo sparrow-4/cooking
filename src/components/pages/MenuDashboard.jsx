@@ -17,7 +17,16 @@ function MenuDashboard() {
   const [isTablet, setIsTablet] = useState(false);
   const [activeNav, setActiveNav] = useState("ALL");
 
-  const [cart, setCart] = useState([]);
+const [cart, setCart] = useState(() => {
+  const saved = localStorage.getItem("cart");
+  return saved ? JSON.parse(saved) : [];
+});
+
+useEffect(() => {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}, [cart]);
+
+
 
   // ✅ RECEIPT STATE
   const [showReceipt, setShowReceipt] = useState(false);

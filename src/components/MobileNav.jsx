@@ -163,7 +163,7 @@ const MobileNav = ({ active, setActive }) => {
               <span className="
                 absolute -bottom-1
                 w-2 h-2 rounded-full
-                bg-[#ff9a63]
+                bg-primary
                 shadow-[0_0_14px_rgba(255,154,99,0.9)]
               " />
             )}
