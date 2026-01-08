@@ -1,26 +1,27 @@
-import food1 from "../assets/svg/food1.svg";
-import food2 from "../assets/svg/food2.svg";
-import food3 from "../assets/svg/food3.svg";
-import food4 from "../assets/svg/food4.svg";
-import logo from "../assets/svg/main.svg";
-import bikeImg from "../assets/images/bike.png";
-import smokeImg from "../assets/images/smoke.png";
+  import food1 from "../assets/svg/food1.svg";
+  import food2 from "../assets/svg/food2.svg";
+  import food3 from "../assets/svg/food3.svg";
+  import food4 from "../assets/svg/food4.svg";
+  import logo from "../assets/svg/main.svg";
+  import bikeImg from "../assets/images/bike.png";
+  import smokeImg from "../assets/images/smoke.png";
 
-// SVG ICONS AS REACT COMPONENTS (VITE CORRECT)
-import HomeIcon from "../assets/svg/icons/homeicon.svg?react";
-import BellIcon from "../assets/svg/icons/bell.svg?react";
-import FavoriteIcon from "../assets/svg/icons/fvrt.svg?react";
-import MessageIcon from "../assets/svg/icons/mesg.svg?react";
-import SettingsIcon from "../assets/svg/icons/dsct.svg?react";
+  // SVG ICONS AS REACT COMPONENTS (VITE CORRECT)
+  import HomeIcon from "../assets/svg/icons/homeicon.svg?react";
+  import BellIcon from "../assets/svg/icons/bell.svg?react";
+  import FavoriteIcon from "../assets/svg/icons/fvrt.svg?react";
+  import MessageIcon from "../assets/svg/icons/mesg.svg?react";
+  import SettingsIcon from "../assets/svg/icons/dsct.svg?react";
 
-export const assets = {
-  food1,
-  food2,
-  food3,
-  food4,
-  logo,
-  bikeImg,
-  smokeImg,
+  export const assets = {
+    
+    food1,
+    food2,
+    food3,
+    food4,
+    logo,
+    bikeImg,
+    smokeImg,
 
   icons: {
     home: HomeIcon,

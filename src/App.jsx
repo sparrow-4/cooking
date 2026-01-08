@@ -7,7 +7,9 @@ import FavoritesPage from "./components/pages/FavoritesPage";
 import MessagesPage from "./components/pages/MessagesPage";
 import SettingsPage from "./components/pages/SettingsPage";
 import Dashboard from "./components/dashboard/Dashboard";
-
+import Category from "./components/dashboard/Category/Category";
+import Ordedrs from "./components/dashboard/orders/Ordedrs";
+import Product from "./components/dashboard/product/product";
 
 const App = () => {
   return (
@@ -22,7 +24,11 @@ const App = () => {
         <Route path="/menu/favorites" element={<FavoritesPage />} />
         <Route path="/menu/messages" element={<MessagesPage />} />
         <Route path="/menu/settings" element={<SettingsPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/dashboard" element={<Dashboard />}>
+          <Route path="category" element={<Category />} />
+          <Route path="products" element={<Product />} />
+          <Route path="orders" element={<Ordedrs />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
