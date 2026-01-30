@@ -83,11 +83,16 @@ const Product = () => {
         />
       )}
 
-      <ProductTable
-        products={products}
-        onEdit={startEdit}
-        onDelete={deleteProduct}
-      />
+      <div className="w-full overflow-x-auto">
+  <div className="min-w-[1100px]"> {/* adjust width if needed */}
+    <ProductTable
+      products={products}
+      onEdit={startEdit}
+      onDelete={deleteProduct}
+    />
+  </div>
+</div>
+
     </div>
   );
 };
