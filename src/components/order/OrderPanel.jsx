@@ -14,6 +14,8 @@ const OrderPanel = ({
   onConfirmPayment, // ✅ comes from MenuDashboard
   orderType,
   setOrderType,
+  setShowPayment,
+
 }) => {
   /* ===== Quantity update ===== */
   const updateQty = (cartId, delta) => {
@@ -26,7 +28,7 @@ const OrderPanel = ({
     );
   };
 
-  const [showPayment, setShowPayment] = useState(false);
+  
 
   /* ===== Remove item ===== */
   const removeItem = (cartId) => {
@@ -212,7 +214,8 @@ const OrderPanel = ({
           <OrderSummary
             cart={cart}
             orderType={orderType}
-            onPlaceOrder={handlePlaceOrder} // ✅ FINAL FIX
+             // ✅ FINAL FIX
+            onPlaceOrder={() => setShowPayment(true)}
           />
         </div>
       )}

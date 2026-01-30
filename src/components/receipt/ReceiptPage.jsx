@@ -71,7 +71,8 @@ const ReceiptPage = ({ total = 21.03, onConfirm, onCancel }) => {
       {/* Total */}
       <div className="flex justify-between items-center mt-6 border-t border-gray-700 pt-4">
         <span className="text-gray-400">Total Payment</span>
-        <span className="text-xl font-semibold">${total}</span>
+        <span className="text-xl font-semibold">{total.toFixed(2)} AED</span>
+
       </div>
 
       {/* Actions */}

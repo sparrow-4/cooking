@@ -11,9 +11,13 @@ import Sidebar from "../SideBar/Sidebar";
 import MobileNav from "../MobileNav";
 import ReceiptPage from "../receipt/ReceiptPage";
 import { FiShoppingCart } from "react-icons/fi";
+import Lastpage from "../receipt/Lastpage";
 
 
 const PRODUCT_KEY = "products";
+const PACKING_CHARGE = 2.0;
+const DELIVERY_CHARGE = 5.0;
+
 
 function MenuDashboard() {
   const [showCart, setShowCart] = useState(false);
@@ -21,6 +25,9 @@ function MenuDashboard() {
   const [isTablet, setIsTablet] = useState(false);
   const [activeNav, setActiveNav] = useState("ALL");
   const [paymentMethod, setPaymentMethod] = useState(null);
+  const [showPayment, setShowPayment] = useState(false);
+const [showSuccess, setShowSuccess] = useState(false);
+
 
 
   /* ===== PRODUCTS (FROM LOCAL STORAGE) ===== */
@@ -50,7 +57,7 @@ function MenuDashboard() {
   }, [cart]);
 
   /* ===== RECEIPT ===== */
-  const [showReceipt, setShowReceipt] = useState(false);
+  
   const [receiptData, setReceiptData] = useState(null);
 
   const totalItems = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
@@ -99,26 +106,69 @@ function MenuDashboard() {
   const toggleCart = () => setShowCart((p) => !p);
 
   /* ===== PLACE ORDER ===== */
+
+  const saveOrderToLocalStorage = (order) => {
+  const existing = JSON.parse(localStorage.getItem("admin_orders")) || [];
+  localStorage.setItem(
+    "admin_orders",
+    JSON.stringify([...existing, order])
+  );
+};
+
   
 const handlePaymentConfirm = (method) => {
   if (cart.length === 0) return;
 
-  setPaymentMethod(method);
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.qty * item.price,
+    0
+  );
 
-  setReceiptData({
+  const packingCharge = orderType === "TAKE_AWAY" ? PACKING_CHARGE : 0;
+  const deliveryCharge = orderType === "DELIVERY" ? DELIVERY_CHARGE : 0;
+  const tax = subtotal * 0.05;
+  const total = subtotal + tax + packingCharge + deliveryCharge;
+
+  const orderData = {
     orderId: `ORD-${Date.now()}`,
-    date: new Date(),
+    date: new Date().toISOString(),
     items: cart,
     orderType,
     paymentMethod: method,
-  });
+    subtotal,
+    tax,
+    packingCharge,
+    deliveryCharge,
+    total,
+  };
 
-  setShowReceipt(true);
+  // ✅ SAVE FOR ADMIN
+  saveOrderToLocalStorage(orderData);
+
+  // ✅ USER FLOW
+  setReceiptData(orderData);
+  setPaymentMethod(method);
+  setShowPayment(false);
+  setShowSuccess(true);
   setCart([]);
   setShowCart(false);
 };
-  
 
+
+  
+const subtotal = cart.reduce(
+  (sum, item) => sum + item.qty * item.price,
+  0
+);
+
+const packingCharge = orderType === "TAKE_AWAY" ? PACKING_CHARGE : 0;
+const deliveryCharge = orderType === "DELIVERY" ? DELIVERY_CHARGE : 0;
+const tax = subtotal * 0.05;
+
+const total = subtotal + tax + packingCharge + deliveryCharge;
+
+
+console.log("STATE:", { showPayment, showSuccess, receiptData });
 
   return (
     <div className="min-h-screen w-full bg-[#111018] relative overflow-hidden">
@@ -126,7 +176,8 @@ const handlePaymentConfirm = (method) => {
         className={`
           w-full max-w-[1600px] mx-auto flex h-screen relative
           transition-all duration-300
-          ${showReceipt ? "blur-sm scale-[0.98]" : ""}
+          ${showPayment || showSuccess ? "blur-sm scale-[0.98]" : ""}
+
         `}
       >
         {!isMobile && <Sidebar />}
@@ -182,6 +233,7 @@ const handlePaymentConfirm = (method) => {
               onConfirmPayment={handlePaymentConfirm}
               orderType={orderType}
               setOrderType={setOrderType}
+              setShowPayment={setShowPayment}
             />
           </div>
         )}
@@ -214,14 +266,29 @@ const handlePaymentConfirm = (method) => {
      
 
 
-      {showReceipt && receiptData && (
+      {/* {showReceipt && receiptData && (
         
         <ReceiptPage
           data={receiptData}
           
           onClose={() => setShowReceipt(false)}
         />
-      )}
+      )} */}
+      {showPayment && (
+  <ReceiptPage
+    total={total}
+
+    onCancel={() => setShowPayment(false)}
+    onConfirm={handlePaymentConfirm}
+  />
+)}
+{showSuccess && (
+  <Lastpage
+    data={receiptData}
+    onClose={() => setShowSuccess(false)}
+  />
+)}
+
     </div>
   );
 }
