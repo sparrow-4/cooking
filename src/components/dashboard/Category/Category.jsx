@@ -36,7 +36,7 @@ const Category = () => {
   /* ---------- helpers ---------- */
 
   const getStats = (categoryId) => {
-    const related = products.filter(p => p.categoryId === categoryId);
+    const related = products.filter((p) => p.categoryId === categoryId);
 
     return {
       productCount: related.length,
@@ -50,12 +50,9 @@ const Category = () => {
   const addCategory = () => {
     if (!newCategory.trim()) return;
 
-    setCategories(prev => [
+    setCategories((prev) => [
       ...prev,
-      {
-        id: crypto.randomUUID(),
-        name: newCategory.trim(),
-      },
+      { id: crypto.randomUUID(), name: newCategory.trim() },
     ]);
 
     setNewCategory("");
@@ -65,8 +62,8 @@ const Category = () => {
   const updateCategory = () => {
     if (!editing.name.trim()) return;
 
-    setCategories(prev =>
-      prev.map(cat =>
+    setCategories((prev) =>
+      prev.map((cat) =>
         cat.id === editing.id ? { ...cat, name: editing.name } : cat
       )
     );
@@ -75,13 +72,13 @@ const Category = () => {
   };
 
   const deleteCategory = (id) => {
-    const used = products.some(p => p.categoryId === id);
+    const used = products.some((p) => p.categoryId === id);
     if (used) {
       alert("Cannot delete category with products");
       return;
     }
 
-    setCategories(prev => prev.filter(cat => cat.id !== id));
+    setCategories((prev) => prev.filter((cat) => cat.id !== id));
     setOpenMenu(null);
   };
 
@@ -89,12 +86,11 @@ const Category = () => {
 
   return (
     <div className="w-full min-h-screen rounded-2xl p-4 sm:p-6 bg-gray-50 overflow-y-auto">
-
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Category</h1>
         <button
-          onClick={() => setShowAdd(prev => !prev)}
+          onClick={() => setShowAdd((prev) => !prev)}
           className="bg-slate-800 text-white px-4 py-2 rounded-md"
         >
           Add Category
@@ -103,49 +99,53 @@ const Category = () => {
 
       {/* Add */}
       {showAdd && (
-        <div className="flex gap-3 mb-6">
-          <input
-            value={newCategory}
-            onChange={(e) => setNewCategory(e.target.value)}
-            placeholder="Category name"
-            className="border px-4 py-2 rounded-md"
-          />
-          <button
-            onClick={addCategory}
-            className="bg-green-600 text-white px-4 py-2 rounded-md"
-          >
-            Save
-          </button>
-        </div>
-      )}
+  <div className="flex flex-col sm:flex-row gap-3 mb-6">
+    <input
+      value={newCategory}
+      onChange={(e) => setNewCategory(e.target.value)}
+      placeholder="Category name"
+      className="border px-4 py-2 rounded-md w-full"
+    />
+
+    <button
+      onClick={addCategory}
+      className="bg-green-600 text-white px-4 py-2 rounded-md w-full sm:w-auto"
+    >
+      Save
+    </button>
+  </div>
+)}
 
       {/* Edit */}
       {editing && (
-        <div className="flex gap-3 mb-6 bg-gray-100 p-4 rounded-md">
-          <input
-            value={editing.name}
-            onChange={(e) =>
-              setEditing({ ...editing, name: e.target.value })
-            }
-            className="border px-4 py-2 rounded-md"
-          />
-          <button
-            onClick={updateCategory}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md"
-          >
-            Update
-          </button>
-          <button
-            onClick={() => setEditing(null)}
-            className="border px-4 py-2 rounded-md"
-          >
-            Cancel
-          </button>
-        </div>
-      )}
+  <div className="flex flex-col sm:flex-row gap-3 mb-6 bg-gray-100 p-4 rounded-md">
+    <input
+      value={editing.name}
+      onChange={(e) =>
+        setEditing({ ...editing, name: e.target.value })
+      }
+      className="border px-4 py-2 rounded-md w-full"
+    />
 
-      {/* Table */}
-      <div className="bg-white rounded-lg shadow overflow-x-auto">
+    <button
+      onClick={updateCategory}
+      className="bg-blue-600 text-white px-4 py-2 rounded-md w-full sm:w-auto"
+    >
+      Update
+    </button>
+
+    <button
+      onClick={() => setEditing(null)}
+      className="border px-4 py-2 rounded-md w-full sm:w-auto"
+    >
+      Cancel
+    </button>
+  </div>
+)}
+
+
+      {/* ================= DESKTOP / TABLET TABLE (UNCHANGED) ================= */}
+      <div className="hidden md:block bg-white rounded-lg shadow overflow-x-auto">
         <table className="w-full min-w-[500px] text-left">
           <thead className="bg-gray-100 text-sm text-gray-600">
             <tr>
@@ -157,7 +157,7 @@ const Category = () => {
           </thead>
 
           <tbody>
-            {categories.map(cat => {
+            {categories.map((cat) => {
               const stats = getStats(cat.id);
 
               return (
@@ -202,6 +202,64 @@ const Category = () => {
             })}
           </tbody>
         </table>
+      </div>
+
+      {/* ================= MOBILE CARD VIEW (NEW) ================= */}
+      <div className="block md:hidden space-y-4">
+        {categories.map((cat) => {
+          const stats = getStats(cat.id);
+
+          return (
+            <div
+              key={cat.id}
+              className="bg-white rounded-xl shadow p-4 flex flex-col gap-3"
+            >
+              <div className="flex justify-between items-center">
+                <h3 className="text-lg font-semibold">{cat.name}</h3>
+                <button
+                  onClick={() =>
+                    setOpenMenu(openMenu === cat.id ? null : cat.id)
+                  }
+                  className="p-2 rounded hover:bg-gray-200"
+                >
+                  <FiMoreVertical />
+                </button>
+              </div>
+
+              <div className="flex justify-between text-sm text-gray-600">
+                <div>
+                  <p className="text-xs uppercase">Products</p>
+                  <p className="font-medium">{stats.productCount}</p>
+                </div>
+                <div>
+                  <p className="text-xs uppercase">Stock</p>
+                  <p className="font-medium">{stats.stockCount}</p>
+                </div>
+              </div>
+
+              {openMenu === cat.id && (
+                <div className="flex gap-2 pt-2 border-t">
+                  <button
+                    onClick={() => {
+                      setEditing(cat);
+                      setOpenMenu(null);
+                    }}
+                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-md border"
+                  >
+                    <FiEdit /> Edit
+                  </button>
+
+                  <button
+                    onClick={() => deleteCategory(cat.id)}
+                    className="flex-1 flex items-center justify-center gap-2 py-2 rounded-md border text-red-600"
+                  >
+                    <FiTrash2 /> Delete
+                  </button>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

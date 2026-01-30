@@ -27,14 +27,14 @@ const ProductAdd = ({ onAdd, onCancel }) => {
   /* ---------- helpers ---------- */
 
   const toggleSize = (size) => {
-    setProduct(prev => {
+    setProduct((prev) => {
       const hasSize = prev.sizes.includes(size);
 
       if (hasSize) {
         const { [size]: _, ...restPricing } = prev.pricing;
         return {
           ...prev,
-          sizes: prev.sizes.filter(s => s !== size),
+          sizes: prev.sizes.filter((s) => s !== size),
           pricing: restPricing,
         };
       }
@@ -51,10 +51,10 @@ const ProductAdd = ({ onAdd, onCancel }) => {
   };
 
   const toggleOrderType = (type) => {
-    setProduct(prev => ({
+    setProduct((prev) => ({
       ...prev,
       orderTypes: prev.orderTypes.includes(type)
-        ? prev.orderTypes.filter(t => t !== type)
+        ? prev.orderTypes.filter((t) => t !== type)
         : [...prev.orderTypes, type],
     }));
   };
@@ -64,7 +64,7 @@ const ProductAdd = ({ onAdd, onCancel }) => {
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      setProduct(prev => ({
+      setProduct((prev) => ({
         ...prev,
         image: reader.result,
       }));
@@ -79,13 +79,13 @@ const ProductAdd = ({ onAdd, onCancel }) => {
     if (product.sizes.length === 0) return alert("Select at least one size");
 
     const invalidPrice = product.sizes.some(
-      size => product.pricing[size]?.price <= 0
+      (size) => product.pricing[size]?.price <= 0
     );
     if (invalidPrice) return alert("Price must be greater than 0");
 
     onAdd({
       ...product,
-      id: crypto.randomUUID(), // generate ONLY here
+      id: crypto.randomUUID(),
       stock: Number(product.stock),
     });
   };
@@ -93,12 +93,12 @@ const ProductAdd = ({ onAdd, onCancel }) => {
   /* ---------- UI ---------- */
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow mb-6 flex flex-col gap-4">
+    <div className="bg-white p-4 rounded-lg shadow mb-6 flex flex-col gap-5">
 
       {/* Image */}
       <div>
         <p className="text-sm font-medium mb-2">Product Image</p>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="w-20 h-20 border rounded-md flex items-center justify-center overflow-hidden bg-gray-50">
             {product.image ? (
               <img
@@ -115,6 +115,7 @@ const ProductAdd = ({ onAdd, onCancel }) => {
             type="file"
             accept="image/*"
             onChange={(e) => handleImageUpload(e.target.files[0])}
+            className="w-full sm:w-auto"
           />
         </div>
       </div>
@@ -125,7 +126,7 @@ const ProductAdd = ({ onAdd, onCancel }) => {
         onChange={(e) =>
           setProduct({ ...product, name: e.target.value })
         }
-        className="border px-3 py-2 rounded"
+        className="border px-3 py-2 rounded w-full"
         placeholder="Product name"
       />
 
@@ -135,10 +136,10 @@ const ProductAdd = ({ onAdd, onCancel }) => {
         onChange={(e) =>
           setProduct({ ...product, categoryId: e.target.value })
         }
-        className="border px-3 py-2 rounded"
+        className="border px-3 py-2 rounded w-full"
       >
         <option value="">Select category</option>
-        {categories.map(cat => (
+        {categories.map((cat) => (
           <option key={cat.id} value={cat.id}>
             {cat.name}
           </option>
@@ -152,15 +153,15 @@ const ProductAdd = ({ onAdd, onCancel }) => {
         onChange={(e) =>
           setProduct({ ...product, stock: Number(e.target.value) })
         }
-        className="border px-3 py-2 rounded"
+        className="border px-3 py-2 rounded w-full"
         placeholder="Stock"
       />
 
       {/* Sizes */}
       <div>
         <p className="text-sm font-medium mb-2">Sizes</p>
-        <div className="flex gap-4">
-          {SIZE_OPTIONS.map(size => (
+        <div className="flex flex-wrap gap-4">
+          {SIZE_OPTIONS.map((size) => (
             <label key={size} className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -178,10 +179,10 @@ const ProductAdd = ({ onAdd, onCancel }) => {
         <div className="flex flex-col gap-3">
           <p className="text-sm font-medium">Pricing</p>
 
-          {product.sizes.map(size => (
+          {product.sizes.map((size) => (
             <div
               key={size}
-              className="grid grid-cols-3 gap-3 items-center"
+              className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center"
             >
               <span className="font-medium">{size}</span>
 
@@ -190,7 +191,7 @@ const ProductAdd = ({ onAdd, onCancel }) => {
                 placeholder="Price"
                 value={product.pricing[size]?.price}
                 onChange={(e) =>
-                  setProduct(prev => ({
+                  setProduct((prev) => ({
                     ...prev,
                     pricing: {
                       ...prev.pricing,
@@ -201,7 +202,7 @@ const ProductAdd = ({ onAdd, onCancel }) => {
                     },
                   }))
                 }
-                className="border px-3 py-2 rounded"
+                className="border px-3 py-2 rounded w-full"
               />
 
               <input
@@ -209,7 +210,7 @@ const ProductAdd = ({ onAdd, onCancel }) => {
                 placeholder="Old Price"
                 value={product.pricing[size]?.oldPrice}
                 onChange={(e) =>
-                  setProduct(prev => ({
+                  setProduct((prev) => ({
                     ...prev,
                     pricing: {
                       ...prev.pricing,
@@ -220,7 +221,7 @@ const ProductAdd = ({ onAdd, onCancel }) => {
                     },
                   }))
                 }
-                className="border px-3 py-2 rounded"
+                className="border px-3 py-2 rounded w-full"
               />
             </div>
           ))}
@@ -230,8 +231,8 @@ const ProductAdd = ({ onAdd, onCancel }) => {
       {/* Order Types */}
       <div>
         <p className="text-sm font-medium mb-2">Order Types</p>
-        <div className="flex gap-4 flex-wrap">
-          {ORDER_TYPES.map(type => (
+        <div className="flex flex-wrap gap-4">
+          {ORDER_TYPES.map((type) => (
             <label key={type} className="flex items-center gap-2">
               <input
                 type="checkbox"
@@ -245,17 +246,17 @@ const ProductAdd = ({ onAdd, onCancel }) => {
       </div>
 
       {/* Actions */}
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3 pt-2">
         <button
           onClick={handleAdd}
-          className="bg-green-600 text-white px-4 py-2 rounded"
+          className="bg-green-600 text-white px-4 py-2 rounded w-full sm:w-auto"
         >
           Add Product
         </button>
 
         <button
           onClick={onCancel}
-          className="border px-4 py-2 rounded"
+          className="border px-4 py-2 rounded w-full sm:w-auto"
         >
           Cancel
         </button>
