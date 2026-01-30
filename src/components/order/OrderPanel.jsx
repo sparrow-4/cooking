@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FiTrash2, FiArrowLeft } from "react-icons/fi";
 import OrderSummary from "./OrderSummary";
 import { motion } from "framer-motion";
@@ -11,7 +11,7 @@ const OrderPanel = ({
   isMobile,
   onBack,
   isTablet,
-  onPlaceOrder,
+  onConfirmPayment, // ✅ comes from MenuDashboard
   orderType,
   setOrderType,
 }) => {
@@ -26,9 +26,20 @@ const OrderPanel = ({
     );
   };
 
+  const [showPayment, setShowPayment] = useState(false);
+
   /* ===== Remove item ===== */
   const removeItem = (cartId) => {
     setCart((prev) => prev.filter((item) => item.cartId !== cartId));
+  };
+
+  /* =====================================================
+     ✅ THIS IS THE FIX
+     This function is what OrderSummary will call
+     ===================================================== */
+  const handlePlaceOrder = () => {
+    // keep your flow exactly the same
+    onConfirmPayment("CASH"); // or default method
   };
 
   return (
@@ -97,22 +108,19 @@ const OrderPanel = ({
       {/* ITEMS LIST */}
       <div className="space-y-4 overflow-y-auto no-scrollbar pr-2 max-h-[55vh] md:max-h-[80vh] lg:max-h-[70vh]">
         {cart.length === 0 && (
-  <div className="flex flex-col items-center justify-center mt-20 text-center">
-    
-    <video
-      src="/videos/empty-cart.mp4"
-      autoPlay
-      loop
-      muted
-      playsInline
-      className="w-48 h-48 mb-4 object-contain"
-    />
+          <div className="flex flex-col items-center justify-center mt-20 text-center">
+            <video
+              src="/videos/empty-cart.mp4"
+              autoPlay
+              loop
+              muted
+              playsInline
+              className="w-48 h-48 mb-4 object-contain rounded-3xl"
+            />
+            <p className="text-gray-400 text-sm">Cart is empty</p>
+          </div>
+        )}
 
-    <p className="text-gray-400 text-sm">
-      Cart is empty
-    </p>
-  </div>
-)}
         {cart.map((item) => {
           const itemTotal = (item.price * item.qty).toFixed(2);
 
@@ -121,10 +129,7 @@ const OrderPanel = ({
               key={item.cartId}
               className="bg-[#17161b] p-4 rounded-xl text-white"
             >
-              {/* MAIN ROW */}
               <div className="flex items-start justify-between">
-                
-                {/* LEFT SIDE */}
                 <div className="flex items-start gap-3">
                   <img
                     src={item.img}
@@ -137,7 +142,6 @@ const OrderPanel = ({
                       {item.name}
                     </p>
 
-                    {/* SIZE */}
                     <span className="inline-block mt-1 px-2 py-[2px] rounded-full text-[10px] bg-[#26252d] text-primary">
                       Size: {item.size}
                     </span>
@@ -152,22 +156,19 @@ const OrderPanel = ({
                   </div>
                 </div>
 
-                {/* RIGHT SIDE */}
                 <div className="flex flex-col items-end gap-3">
-                  {/* DELETE */}
                   <button
                     onClick={() => removeItem(item.cartId)}
-                    className="border border-primary text-primary p-2 rounded-md transition hover:border-pink-400 hover:text-pink-400 hover:bg-pink-500/20"
+                    className="border border-primary text-primary p-2 rounded-md"
                   >
                     <FiTrash2 size={16} />
                   </button>
 
-                  {/* QUANTITY (UNDER DELETE) */}
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => updateQty(item.cartId, -1)}
                       disabled={item.qty <= 1}
-                      className="w-7 h-7 bg-[#26252d] rounded-lg flex items-center justify-center disabled:opacity-40"
+                      className="w-7 h-7 bg-[#26252d] rounded-lg"
                     >
                       –
                     </button>
@@ -178,7 +179,7 @@ const OrderPanel = ({
 
                     <button
                       onClick={() => updateQty(item.cartId, 1)}
-                      className="w-7 h-7 bg-primary text-black rounded-lg flex items-center justify-center"
+                      className="w-7 h-7 bg-primary text-black rounded-lg"
                     >
                       +
                     </button>
@@ -186,7 +187,6 @@ const OrderPanel = ({
                 </div>
               </div>
 
-              {/* NOTE */}
               <input
                 value={item.note || ""}
                 onChange={(e) =>
@@ -208,13 +208,13 @@ const OrderPanel = ({
 
       {/* SUMMARY */}
       {cart.length > 0 && (
-      <div className="mt-auto pt-4">
-        <OrderSummary
-          cart={cart}
-          onPlaceOrder={onPlaceOrder}
-          orderType={orderType}
-        />
-      </div>
+        <div className="mt-auto pt-4">
+          <OrderSummary
+            cart={cart}
+            orderType={orderType}
+            onPlaceOrder={handlePlaceOrder} // ✅ FINAL FIX
+          />
+        </div>
       )}
     </div>
   );

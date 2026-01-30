@@ -20,7 +20,7 @@ const Dashboard = () => {
   const [settingsopen, setSettingsOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
+    <div className="flex h-screen w-full max-w-[1600px] mx-auto bg-gray-100 overflow-hidden">
       {/* ===== MOBILE BACKDROP ===== */}
       {sidebarOpen && (
         <div
@@ -35,7 +35,7 @@ const Dashboard = () => {
           
               hidden md:flex
               md:static inset-y-0 left-0 z-50
-              w-64 bg-[#141521] border-r border-gray-200
+              w-64 bg-[#141521] 
               flex-col
             
           
@@ -45,7 +45,7 @@ const Dashboard = () => {
         `}
       >
         {/* Sidebar Header */}
-        <div className="h-16 flex items-center justify-between px-6 font-bold text-xl text-primary border-b">
+        <div className="h-16 flex items-center justify-between px-6 font-bold text-3xl text-primary border-b border-gray-600 ">
           Chef Kitchen
           
         </div>
@@ -79,7 +79,7 @@ const Dashboard = () => {
           {/* LEFT */}
           <div className="flex items-center gap-3">
             
-            <h1 className="text-sm font-semibold text-gray-600 tracking-wide">
+            <h1 className="text-lg font-semibold text-white font-sans tracking-wide">
               Dashboard Page
             </h1>
           </div>
@@ -123,8 +123,8 @@ const Dashboard = () => {
     active:scale-95"
               />
               <div className="text-xs leading-tight">
-                <p className="font-semibold text-gray-700">Admin</p>
-                <p className="text-gray-400">Editor</p>
+                <p className="font-bold text-primary">Admin</p>
+                <p className="text-white">Editor</p>
               </div>
             </div>
 

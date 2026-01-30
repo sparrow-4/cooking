@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { gsap } from "gsap";
 
 const DishCard = ({ dish, onAddToCart, cart }) => {
@@ -9,11 +9,19 @@ const DishCard = ({ dish, onAddToCart, cart }) => {
   const imgRef = useRef(null);
   const btnRef = useRef(null);
 
-  const priceData = dish.pricing[size];
+  const priceData = dish.pricing?.[size] || { price: 0, oldPrice: 0 };
+
   const isOut = dish.stock === 0;
 
   const cartId = `${dish.id}-${size}`;
   const isAdded = cart?.some((item) => item.cartId === cartId);
+
+  useEffect(() => {
+  if (!dish.sizes.includes(size)) {
+    setSize(dish.sizes[0]);
+  }
+}, [dish.sizes, size]);
+
 
   /* ===== GSAP HOVER ===== */
   const onHover = () => {
@@ -118,9 +126,12 @@ const DishCard = ({ dish, onAddToCart, cart }) => {
 
         {/* PRICE */}
         <div className="mt-4 flex justify-center gap-3 items-center">
-          <span className="text-xs text-gray-500 line-through">
-            {priceData.oldPrice} {dish.currency}
-          </span>
+          {priceData.oldPrice > 0 && (
+  <span className="text-xs text-gray-500 line-through">
+    {priceData.oldPrice} {dish.currency}
+  </span>
+)}
+
           <span className="text-primary font-semibold">
             {priceData.price} {dish.currency}
           </span>
