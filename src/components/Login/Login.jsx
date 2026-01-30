@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Lock, Mail, User } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
+/* animations */
 const container = {
   hidden: { opacity: 0 },
   visible: {
@@ -22,24 +23,63 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  /* 🔒 LOCK browser back/forward BEFORE login */
+  useEffect(() => {
+    window.history.pushState(null, "", window.location.href);
+
+    const blockNavigation = () => {
+      window.history.pushState(null, "", window.location.href);
+    };
+
+    window.addEventListener("popstate", blockNavigation);
+
+    return () => {
+      window.removeEventListener("popstate", blockNavigation);
+    };
+  }, []);
+
+  /* SweetAlert success → navigate */
+  const successAlert = (title, route) => {
+    Swal.fire({
+      icon: "success",
+      title,
+      text: "Login successful",
+      timer: 1500,
+      showConfirmButton: false,
+      background: "#1F1D2B",
+      color: "#fff",
+    }).then(() => {
+      navigate(route, { replace: true }); // ✅ remove login from history
+    });
+  };
+
+  const errorAlert = () => {
+    Swal.fire({
+      icon: "error",
+      title: "Login Failed",
+      text: "Invalid email or password",
+      background: "#1F1D2B",
+      color: "#fff",
+      confirmButtonColor: "#ff9a63",
+    });
+  };
+
   const handleLogin = () => {
     // ADMIN
     if (email === "admin@123" && password === "123") {
       localStorage.setItem("role", "admin");
-      toast.success("Welcome Admin 👋");
-      navigate("/dashboard");
+      successAlert("Welcome Admin 👋", "/dashboard");
       return;
     }
 
     // USER
     if (email === "user@123" && password === "123") {
       localStorage.setItem("role", "user");
-      toast.success("Login successful 🎉");
-      navigate("/home");
+      successAlert("Welcome Back 🎉", "/home");
       return;
     }
 
-    toast.error("Invalid email or password ❌");
+    errorAlert();
   };
 
   return (
@@ -76,7 +116,7 @@ const Login = () => {
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="email@123"
+              placeholder="username"
               className="bg-transparent outline-none w-full text-sm"
             />
           </motion.div>
@@ -110,15 +150,6 @@ const Login = () => {
         >
           Login
         </motion.button>
-
-        {/* HINT */}
-        <motion.p
-          variants={item}
-          className="text-[11px] text-gray-400 text-center mt-6"
-        >
-          Admin → admin@123 / 123 <br />
-          User → user@123 / 123
-        </motion.p>
       </motion.div>
     </div>
   );
